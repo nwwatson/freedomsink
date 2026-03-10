@@ -46,7 +46,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # Uncomment for S3-compatible storage (AWS S3, DigitalOcean Spaces, MinIO, Cloudflare R2)
-# gem "aws-sdk-s3", require: false
+gem "aws-sdk-s3", require: false
 
 # Modern rich text editor built on Lexical [https://github.com/basecamp/lexxy]
 gem "lexxy", "~> 0.7.4.beta"
