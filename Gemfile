@@ -49,13 +49,13 @@ gem "image_processing", "~> 1.2"
 gem "aws-sdk-s3", require: false
 
 # Modern rich text editor built on Lexical [https://github.com/basecamp/lexxy]
-gem "lexxy", "~> 0.7.4.beta"
+gem "lexxy", "~> 0.8.0.beta"
 
 # Unified LLM interface for Claude, Gemini, and more [https://github.com/crmne/ruby_llm]
 gem "ruby_llm"
 
 # Model Context Protocol server for Claude Desktop integration [https://github.com/modelcontextprotocol/ruby-sdk]
-gem "mcp", "~> 0.7"
+gem "mcp", "~> 0.8"
 
 # Rust-backed CommonMark/GFM markdown to HTML [https://github.com/gjtorikian/commonmarker]
 gem "commonmarker", "~> 2.3"
