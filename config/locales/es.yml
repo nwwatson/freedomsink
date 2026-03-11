@@ -231,6 +231,7 @@ es:
         ai_empty_state: "Pide ayuda a la IA para escribir o usa una acción rápida arriba."
         ai_placeholder: "Pregunta a la IA..."
         ai_send_hint: "Presiona Enter para enviar, Shift+Enter para nueva línea"
+        versions: "Versiones"
       featured_image_modal:
         title: "Generar imagen destacada"
         suggesting_prompt: "Sugiriendo un prompt..."
@@ -587,6 +588,17 @@ es:
         generated_image: "Imagen destacada generada"
         save_as_featured: "Guardar como imagen destacada"
         regenerate: "Regenerar"
+    post_versions:
+      index:
+        save_version: "Guardar versión"
+        diff: "Diferencia"
+        no_versions: "Sin versiones aún. Las versiones se guardan automáticamente mientras editas."
+      show:
+        restore: "Restaurar"
+        restore_confirm: "¿Restaurar esta versión? Tu contenido actual será reemplazado."
+        back: "Volver"
+        title_change: "Título cambiado"
+        content_diff: "Cambios en el contenido"
 
   subscriber_mailer:
     confirmation:
@@ -671,6 +683,9 @@ es:
         deleted: "Segmento eliminado."
       subscriber_labelings:
         already_assigned: "La etiqueta ya está asignada a este suscriptor."
+      post_versions:
+        created: "Versión guardada."
+        restored: "Versión restaurada."
       categories:
         created: "Categoría creada."
         updated: "Categoría actualizada."

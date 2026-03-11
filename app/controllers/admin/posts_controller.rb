@@ -46,6 +46,7 @@ module Admin
 
     def update
       if @post.update(post_params)
+        @post.create_version_if_needed!(user: current_user)
         respond_to do |format|
           format.html { redirect_to edit_admin_post_path(@post), notice: t("flash.admin.posts.updated") }
           format.json { render json: post_json(@post), status: :ok }

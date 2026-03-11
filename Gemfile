@@ -60,6 +60,9 @@ gem "mcp", "~> 0.8"
 # Rust-backed CommonMark/GFM markdown to HTML [https://github.com/gjtorikian/commonmarker]
 gem "commonmarker", "~> 2.3"
 
+# Plain-text diffs for post version history [https://github.com/samg/diffy]
+gem "diffy"
+
 # SendGrid Web API v3 for email delivery with tracking [https://github.com/sendgrid/sendgrid-ruby]
 gem "sendgrid-ruby"
 

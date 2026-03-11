@@ -58,6 +58,8 @@ app/models/user/authenticatable.rb    # module User::Authenticatable (concern)
 app/models/user/api_tokenable.rb     # module User::ApiTokenable (concern)
 app/models/user/passkey_authenticatable.rb # module User::PasskeyAuthenticatable (WebAuthn passkeys)
 app/models/post/discoverable.rb      # module Post::Discoverable (related posts, prev/next)
+app/models/post/versionable.rb      # module Post::Versionable (revision history, version cooldown)
+app/models/post_version.rb          # PostVersion: full snapshot of post content per version
 app/models/page.rb                    # class Page (custom static pages)
 app/models/page/sluggable.rb         # module Page::Sluggable (auto-generated URL slugs)
 app/models/page/publishable.rb       # module Page::Publishable (live scope, publish/draft)
@@ -96,7 +98,10 @@ Uses the **RubyLLM** gem for a unified LLM interface across providers (Claude fo
 Pages (`Page` model) provide custom static content at top-level URLs (`/:slug`). The catch-all route **must remain last** in `config/routes.rb` (after admin namespace and health check) to avoid intercepting other routes. Pages use `admin_page_editor` layout (simplified editor without AI/preview). Reserved slugs (admin, posts, feed, etc.) are validated at the model level. Published pages with `show_in_navigation: true` appear in the site header automatically via `Page.navigation` scope.
 
 ### Post Editor
-Uses the `admin_editor` layout. Autosave triggers on a 3-second debounce, serializing `#post_form` FormData. The editor drawer is a tabbed panel (AI + Settings). Settings fields use `form="post_form"` attribute with event listeners on the settings tab container to trigger autosave.
+Uses the `admin_editor` layout. Autosave triggers on a 3-second debounce, serializing `#post_form` FormData. The editor drawer is a tabbed panel (AI + Settings + Versions). Settings fields use `form="post_form"` attribute with event listeners on the settings tab container to trigger autosave.
+
+### Post Versioning
+`PostVersion` stores full snapshots (title, subtitle, content HTML, body plain text) on each save. Auto-versioning triggers on update with a 5-minute cooldown (`Post::Versionable`). Manual "Save version" button in the editor drawer's Versions tab. Diff view uses the `diffy` gem for plain-text comparison. "Restore" replaces the post's current content. Max 50 versions per post, pruned inline on version creation. Admin CRUD at `/admin/posts/:id/post_versions`.
 
 ### Key Stimulus Controllers
 `autosave`, `editor_drawer`, `tag_select`, `custom_select`, `streaming_markdown`, `ai_image_modal`, `typography_preview`, `markdown_preview`, `traffic_chart`, `segment_builder`

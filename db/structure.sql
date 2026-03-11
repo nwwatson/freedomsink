@@ -218,7 +218,18 @@ CREATE INDEX "index_newsletters_on_user_id" ON "newsletters" ("user_id") /*appli
 CREATE INDEX "index_newsletters_on_status" ON "newsletters" ("status") /*application='Prose'*/;
 CREATE INDEX "index_newsletters_on_scheduled_for" ON "newsletters" ("scheduled_for") /*application='Prose'*/;
 CREATE INDEX "index_newsletters_on_segment_id" ON "newsletters" ("segment_id") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "post_versions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "user_id" integer NOT NULL, "version_number" integer NOT NULL, "title" varchar NOT NULL, "subtitle" varchar, "content_html" text, "body_plain" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_5f7c4b6bbb"
+FOREIGN KEY ("post_id")
+  REFERENCES "posts" ("id")
+, CONSTRAINT "fk_rails_77830a0f52"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+);
+CREATE INDEX "index_post_versions_on_post_id" ON "post_versions" ("post_id") /*application='Prose'*/;
+CREATE INDEX "index_post_versions_on_user_id" ON "post_versions" ("user_id") /*application='Prose'*/;
+CREATE UNIQUE INDEX "index_post_versions_on_post_id_and_version_number" ON "post_versions" ("post_id", "version_number") /*application='Prose'*/;
 INSERT INTO "schema_migrations" (version) VALUES
+('20260311171612'),
 ('20260311160003'),
 ('20260311160002'),
 ('20260311160001'),

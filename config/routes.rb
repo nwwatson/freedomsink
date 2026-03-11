@@ -45,6 +45,11 @@ Rails.application.routes.draw do
       member do
         get :preview
       end
+      resources :post_versions, only: [ :index, :show, :create ] do
+        member do
+          post :restore
+        end
+      end
       resource :dashboard, only: [ :show ], controller: "post_dashboard"
       namespace :ai do
         resource :conversation, only: [ :show, :create ]

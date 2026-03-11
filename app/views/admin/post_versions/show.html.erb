@@ -1,0 +1,53 @@
+<%= turbo_frame_tag "version-detail" do %>
+  <div class="border-b border-gray-200 px-4 py-3">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-900">
+          v<%= @version.version_number %>
+        </h3>
+        <p class="mt-0.5 text-xs text-gray-500">
+          <%= time_ago_in_words(@version.created_at) %> <%= t("shared.ago") %>
+          · <%= @version.user.display_name %>
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <%= button_to t("admin.post_versions.show.restore"),
+            restore_admin_post_post_version_path(@post, @version),
+            method: :post,
+            class: "rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-blue-500 transition-colors",
+            data: { turbo_confirm: t("admin.post_versions.show.restore_confirm") } %>
+        <%= link_to t("admin.post_versions.show.back"),
+            admin_post_post_versions_path(@post),
+            class: "rounded-md bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors",
+            data: { turbo_frame: "version-detail" } %>
+      </div>
+    </div>
+  </div>
+
+  <% if @version.title != @post.title %>
+    <div class="border-b border-gray-100 px-4 py-2">
+      <p class="text-xs font-medium text-gray-500 mb-1"><%= t("admin.post_versions.show.title_change") %></p>
+      <p class="text-sm">
+        <span class="bg-red-100 text-red-800 line-through"><%= @version.title %></span>
+        &rarr;
+        <span class="bg-green-100 text-green-800"><%= @post.title %></span>
+      </p>
+    </div>
+  <% end %>
+
+  <div class="px-4 py-3 overflow-y-auto" style="max-height: calc(100vh - 16rem);">
+    <p class="text-xs font-medium text-gray-500 mb-2"><%= t("admin.post_versions.show.content_diff") %></p>
+    <div class="text-xs font-mono leading-relaxed whitespace-pre-wrap">
+      <% @diff.each_chunk do |chunk| %>
+        <% case chunk %>
+        <% when /^\+/ %>
+          <span class="bg-green-100 text-green-800"><%= chunk %></span>
+        <% when /^-/ %>
+          <span class="bg-red-100 text-red-800"><%= chunk %></span>
+        <% else %>
+          <span class="text-gray-600"><%= chunk %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
