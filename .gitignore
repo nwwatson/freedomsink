@@ -38,3 +38,5 @@
 !/app/assets/builds/.keep
 /docs/*.png
 /.kamal/.env
+.DS_Store
+.claude/
