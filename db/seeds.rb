@@ -31,6 +31,11 @@ Identity.delete_all
 Tag.delete_all
 Category.delete_all
 
+if Rails.env.production?
+  puts "Skipping subscriber and post seeding in production environment."
+  exit
+end
+
 # ---------------------------------------------------------------------------
 # Staff users
 # ---------------------------------------------------------------------------

@@ -57,7 +57,7 @@ env:
 
     APP_HOST: freedomsink.com
     SMTP_PORT: 587
-    SMTP_FROM: '"FreedomSink - The Blog of Nicholas Watson" <no-reply@freedomsink.com>'
+    SMTP_FROM: '"FreedomsInk" <no-reply@freedomsink.com>'
     SMTP_AUTHENTICATION: plain
     ACTIVE_STORAGE_SERVICE: amazon
     AWS_REGION: default
