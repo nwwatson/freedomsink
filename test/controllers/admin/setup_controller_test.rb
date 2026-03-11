@@ -92,6 +92,7 @@ class Admin::SetupControllerTest < ActionDispatch::IntegrationTest
     PostView.delete_all
     PostTag.delete_all
     Chat.delete_all
+    PostVersion.delete_all
     Post.delete_all
     Page.delete_all
     Session.delete_all

@@ -235,6 +235,7 @@ en:
         ai_empty_state: "Ask AI for writing help or use a quick action above."
         ai_placeholder: "Ask AI..."
         ai_send_hint: "Press Enter to send, Shift+Enter for new line"
+        versions: "Versions"
       featured_image_modal:
         title: "Generate Featured Image"
         suggesting_prompt: "Suggesting a prompt..."
@@ -591,6 +592,17 @@ en:
         generated_image: "Generated Featured Image"
         save_as_featured: "Save as Featured Image"
         regenerate: "Regenerate"
+    post_versions:
+      index:
+        save_version: "Save version"
+        diff: "Diff"
+        no_versions: "No versions yet. Versions are saved automatically as you edit."
+      show:
+        restore: "Restore"
+        restore_confirm: "Restore this version? Your current content will be replaced."
+        back: "Back"
+        title_change: "Title changed"
+        content_diff: "Content changes"
 
   # Mailers
   subscriber_mailer:
@@ -678,6 +690,9 @@ en:
         deleted: "Segment deleted."
       subscriber_labelings:
         already_assigned: "Label is already assigned to this subscriber."
+      post_versions:
+        created: "Version saved."
+        restored: "Version restored."
       categories:
         created: "Category created."
         updated: "Category updated."

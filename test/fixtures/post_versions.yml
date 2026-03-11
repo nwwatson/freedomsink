@@ -1,0 +1,19 @@
+version_one:
+  post: published_post
+  user: admin
+  version_number: 1
+  title: "Original Title"
+  subtitle: "Original subtitle"
+  content_html: "<p>Original content of the post.</p>"
+  body_plain: "Original content of the post."
+  created_at: <%= 2.hours.ago %>
+
+version_two:
+  post: published_post
+  user: admin
+  version_number: 2
+  title: "Published Post"
+  subtitle: "A published article"
+  content_html: "<p>Updated content of the post.</p>"
+  body_plain: "Updated content of the post."
+  created_at: <%= 1.hour.ago %>
