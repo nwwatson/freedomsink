@@ -202,7 +202,9 @@ FOREIGN KEY ("user_id")
 );
 CREATE INDEX "index_passkeys_on_user_id" ON "passkeys" ("user_id") /*application='Prose'*/;
 CREATE UNIQUE INDEX "index_passkeys_on_credential_id" ON "passkeys" ("credential_id") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "queue_tables" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 INSERT INTO "schema_migrations" (version) VALUES
+('20260311034706'),
 ('20260224192846'),
 ('20260224183928'),
 ('20260224183914'),
