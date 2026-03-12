@@ -1,11 +1,11 @@
-<%= form_with model: comment, url: post_comment_path(post, comment, slug: post.slug), method: :patch, class: "space-y-2" do |f| %>
+<%= form_with model: comment, url: post_comment_path(post, comment, slug: post.slug), method: :patch, class: "comment__edit-form" do |f| %>
   <% if comment.errors.any? %>
     <div class="comment-form__errors"><%= comment.errors.full_messages.to_sentence %></div>
   <% end %>
   <%= f.text_area :body, rows: 3,
         data: { controller: "autogrow", action: "input->autogrow#resize" },
         class: "form-input comment-form__textarea prose-comment font-serif" %>
-  <div class="flex items-center space-x-2">
+  <div class="comment__edit-controls">
     <%= f.submit t('shared.save'), class: "btn btn--primary btn--small" %>
     <button type="button" data-action="click->comment-edit#toggle" class="btn btn--secondary">
       <%= t('shared.cancel') %>

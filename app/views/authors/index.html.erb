@@ -10,10 +10,10 @@
 
 <div>
   <h1 class="page-heading"><%= t('authors.index.title') %></h1>
-  <p class="mt-2 muted-text"><%= t('authors.index.meet_the_people', site_name: site_name) %></p>
+  <p class="page-subtitle"><%= t('authors.index.meet_the_people', site_name: site_name) %></p>
 </div>
 
-<div class="mt-8 space-y-8">
+<div class="post-listing">
   <% @authors.each do |identity| %>
     <div class="author-card">
       <div class="author-card__inner">
@@ -28,7 +28,7 @@
         <% end %>
 
         <div class="author-card__info">
-          <h2 class="font-display text-xl font-bold">
+          <h2>
             <%= link_to identity.name, author_path(identity, handle: identity.handle),
                   class: "author-card__name" %>
           </h2>

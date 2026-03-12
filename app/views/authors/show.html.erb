@@ -58,9 +58,9 @@
 
 <%# Post archive %>
 <% if @posts.any? %>
-  <h2 class="font-display text-xl font-bold mb-6"><%= t('authors.show.posts_by_author', name: @identity.name) %></h2>
+  <h2 class="section-heading"><%= t('authors.show.posts_by_author', name: @identity.name) %></h2>
 
-  <div class="space-y-8">
+  <div class="post-listing">
     <% @posts.each do |post| %>
       <article class="post-card">
         <h3 class="post-card__title">
@@ -85,9 +85,9 @@
   </div>
 
   <% if @next_page %>
-    <div class="mt-8 text-center">
+    <div class="load-more">
       <%= link_to t('authors.show.load_more'), author_path(@identity, handle: @identity.handle, page: @next_page),
-            class: "btn btn--primary inline-block" %>
+            class: "btn btn--primary" %>
     </div>
   <% end %>
 <% else %>

@@ -39,7 +39,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-cream text-charcoal font-serif min-h-screen flex flex-col">
+  <body class="layout__body">
     <%# Masthead %>
     <header class="masthead">
       <div class="masthead__inner">
@@ -83,7 +83,7 @@
     <% end %>
 
     <%# Main content %>
-    <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+    <main class="layout__main">
       <%= yield %>
     </main>
 
