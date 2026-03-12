@@ -1,0 +1,65 @@
+/* ==========================================================================
+ * .comment-form — Comment form BEM block
+ *
+ * Usage:
+ *   .comment-form__tabs          Write/Preview tab bar
+ *   .comment-form__tab           Inactive tab button
+ *   .comment-form__tab--active   Active tab button
+ *   .comment-form__textarea      Comment textarea (compose with .form-input)
+ *   .comment-form__preview       Markdown preview panel
+ *   .comment-form__footer        Bottom row (help text + controls)
+ *   .comment-form__help          Markdown syntax help text
+ *   .comment-form__help-code     Inline code sample in help text
+ *   .comment-form__controls      Right-aligned submit + notify controls
+ *   .comment-form__notify-label  Notification checkbox label
+ *   .comment-form__errors        Validation error text
+ *   .comment-form__guest-prompt  "Subscribe to comment" prompt for guests
+ * ========================================================================== */
+
+.comment-form__tabs {
+  @apply mb-2 flex border-b border-gray-200 dark:border-gray-700;
+}
+
+.comment-form__tab {
+  @apply border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-3 pb-2 text-sm font-medium cursor-pointer;
+}
+
+.comment-form__tab--active {
+  @apply border-gray-900 text-gray-900 dark:border-gray-100 dark:text-gray-100;
+}
+
+.comment-form__textarea {
+  @apply resize-none;
+}
+
+.comment-form__preview {
+  @apply hidden min-h-[4.5rem] overflow-hidden rounded-md bg-white dark:bg-white/5 px-3 py-2 font-serif text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600;
+}
+
+.comment-form__footer {
+  @apply flex items-center justify-between;
+}
+
+.comment-form__help {
+  @apply flex items-center space-x-3 text-xs text-gray-400 dark:text-gray-500;
+}
+
+.comment-form__help-code {
+  @apply bg-gray-100 dark:bg-gray-800 px-1 rounded;
+}
+
+.comment-form__controls {
+  @apply flex items-center space-x-3;
+}
+
+.comment-form__notify-label {
+  @apply flex items-center space-x-1.5 text-xs text-gray-500 dark:text-gray-400 cursor-pointer;
+}
+
+.comment-form__errors {
+  @apply text-sm text-red-600 dark:text-red-400;
+}
+
+.comment-form__guest-prompt {
+  @apply rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center text-sm text-gray-500 dark:text-gray-400;
+}
