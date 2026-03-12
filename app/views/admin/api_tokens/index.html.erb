@@ -1,16 +1,16 @@
 <% content_for(:title) { "API Tokens" } %>
 
 <div class="max-w-4xl">
-  <div class="flex items-center justify-between mb-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-900"><%= t('admin.api_tokens.index.title') %></h1>
   </div>
 
   <% if flash[:raw_token] %>
     <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4">
       <p class="text-sm font-medium text-green-800 mb-2"><%= t('admin.api_tokens.index.token_created') %></p>
-      <div class="flex items-center gap-2">
-        <code class="flex-1 rounded bg-white px-3 py-2 font-mono text-sm text-gray-900 border border-green-200 select-all"><%= flash[:raw_token] %></code>
-        <button type="button" onclick="navigator.clipboard.writeText('<%= flash[:raw_token] %>')" class="rounded bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <code class="flex-1 rounded bg-white px-3 py-2 font-mono text-sm text-gray-900 border border-green-200 select-all break-all"><%= flash[:raw_token] %></code>
+        <button type="button" onclick="navigator.clipboard.writeText('<%= flash[:raw_token] %>')" class="self-start rounded bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700">
           <%= t('admin.api_tokens.index.copy') %>
         </button>
       </div>
@@ -20,12 +20,12 @@
   <%# Create form %>
   <div class="mb-8 rounded-lg border border-gray-200 bg-white p-4">
     <h2 class="text-sm font-medium text-gray-700 mb-3"><%= t('admin.api_tokens.index.create_new_token') %></h2>
-    <%= form_with url: admin_api_tokens_path, method: :post, class: "flex items-end gap-3" do |f| %>
+    <%= form_with url: admin_api_tokens_path, method: :post, class: "flex flex-col gap-3 sm:flex-row sm:items-end" do |f| %>
       <div class="flex-1">
         <label for="name" class="block text-sm text-gray-600 mb-1"><%= t('admin.api_tokens.index.token_name') %></label>
         <input type="text" name="name" id="name" required placeholder="<%= t('admin.api_tokens.index.token_name_placeholder') %>" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
       </div>
-      <button type="submit" class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+      <button type="submit" class="self-start rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
         <%= t('admin.api_tokens.index.generate_token') %>
       </button>
     <% end %>
@@ -33,7 +33,41 @@
 
   <%# Token list %>
   <% if @api_tokens.any? %>
-    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white">
+    <%# Mobile card layout %>
+    <div class="space-y-3 lg:hidden">
+      <% @api_tokens.each do |token| %>
+        <div class="rounded-lg border border-gray-200 bg-white p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-sm font-medium text-gray-900"><%= token.name %></p>
+              <p class="mt-0.5 text-xs font-mono text-gray-500"><%= token.token_prefix %>...</p>
+            </div>
+            <% if token.revoked? %>
+              <span class="inline-flex flex-shrink-0 items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800"><%= t('shared.revoked') %></span>
+            <% else %>
+              <span class="inline-flex flex-shrink-0 items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800"><%= t('shared.active') %></span>
+            <% end %>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+            <% if current_user.admin? %>
+              <span><%= token.user.display_name %></span>
+            <% end %>
+            <span><%= t('admin.api_tokens.index.last_used') %>: <%= token.last_used_at ? time_ago_in_words(token.last_used_at) + " " + t('shared.ago') : t('shared.never') %></span>
+            <span><%= token.created_at.strftime("%b %d, %Y") %></span>
+          </div>
+          <% unless token.revoked? %>
+            <div class="mt-3">
+              <%= button_to t('admin.api_tokens.index.revoke'), admin_api_token_path(token), method: :delete,
+                    class: "rounded-md bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100",
+                    data: { turbo_confirm: t('admin.api_tokens.index.revoke_confirm') } %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Desktop table layout %>
+    <div class="hidden overflow-hidden rounded-lg border border-gray-200 bg-white lg:block">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

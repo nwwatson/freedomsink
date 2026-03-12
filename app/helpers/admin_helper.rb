@@ -43,7 +43,7 @@ module AdminHelper
 
   def admin_nav_link(label, path, icon: nil, small: false)
     active = current_page?(path)
-    size_classes = small ? "text-xs py-1.5" : "text-sm py-2"
+    size_classes = small ? "text-xs py-2 sm:py-1.5" : "text-sm py-2"
     base_classes = "group flex items-center rounded-md px-3 font-medium #{size_classes}"
     active_classes = active ? "bg-gray-100 text-gray-900" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
 
