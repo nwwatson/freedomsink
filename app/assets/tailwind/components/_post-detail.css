@@ -1,0 +1,77 @@
+/* ==========================================================================
+ * .post-detail — Post detail page BEM block
+ *
+ * The most complex public template: breadcrumb, header, featured image,
+ * prose content, tags, engagement, and comments sections.
+ *
+ * Usage:
+ *   .post-detail__breadcrumb       Breadcrumb nav container
+ *   .post-detail__header           Header with bottom border
+ *   .post-detail__title            Post title (h1)
+ *   .post-detail__subtitle         Optional subtitle
+ *   .post-detail__meta             Wrapper for .post-meta shared block
+ *   .post-detail__featured-image   Featured image (full-width, rounded)
+ *   .post-detail__content          Prose typography container (combine with
+ *                                  Tailwind prose utilities in markup)
+ *   .post-detail__tags             Tags footer section
+ *   .post-detail__tag              Individual tag pill
+ *   .post-detail__engagement       Engagement (love button) section
+ *   .post-detail__comments-section Comments wrapper section
+ *   .post-detail__comments-heading Comments heading
+ *   .post-detail__comments-list    Comments list with dividers
+ * ========================================================================== */
+
+.post-detail__breadcrumb {
+  @apply mb-4 text-sm text-gray-600 dark:text-gray-400;
+}
+
+.post-detail__header {
+  @apply mb-8 border-b border-gray-300 dark:border-gray-700 pb-8;
+}
+
+.post-detail__title {
+  @apply font-display text-4xl font-bold leading-tight lg:text-5xl;
+}
+
+.post-detail__subtitle {
+  @apply mt-3 text-xl text-gray-600 dark:text-gray-400 font-subtitle;
+}
+
+.post-detail__meta {
+  @apply mt-4;
+}
+
+.post-detail__featured-image {
+  @apply mb-8;
+}
+
+/* NOTE: prose utilities from @tailwindcss/typography cannot be used with
+   @apply in Tailwind v4. The prose classes are kept inline in the template
+   and this BEM class layers on max-w-none only. */
+.post-detail__content {
+  @apply max-w-none;
+}
+
+.post-detail__tags {
+  @apply mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 flex flex-wrap gap-2;
+}
+
+.post-detail__tag {
+  @apply inline-block rounded-full bg-gray-100 dark:bg-gray-700 px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 no-underline;
+}
+
+.post-detail__engagement {
+  @apply mt-8 border-t border-gray-200 dark:border-gray-700 pt-6;
+}
+
+.post-detail__comments-section {
+  @apply mt-8 border-t border-gray-200 dark:border-gray-700 pt-6;
+}
+
+.post-detail__comments-heading {
+  @apply font-display text-xl font-bold;
+}
+
+.post-detail__comments-list {
+  @apply mt-4 divide-y divide-gray-100 dark:divide-gray-700;
+}
