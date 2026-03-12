@@ -1,18 +1,18 @@
 <% content_for(:title, t('unsubscribes.show.title')) %>
 
-<div class="mx-auto max-w-md py-16 text-center">
-  <h1 class="text-2xl font-bold text-gray-900"><%= t('unsubscribes.show.title') %></h1>
-  <p class="mt-4 text-gray-600">
+<div class="unsubscribe-page">
+  <h1 class="unsubscribe-page__heading"><%= t('unsubscribes.show.title') %></h1>
+  <p class="unsubscribe-page__message">
     <%= t('unsubscribes.show.confirm_message_html', email: @subscriber.email) %>
   </p>
 
-  <%= form_with url: unsubscribe_path, method: :post, class: "mt-6" do |f| %>
+  <%= form_with url: unsubscribe_path, method: :post, class: "unsubscribe-page__action" do |f| %>
     <%= hidden_field_tag :token, params[:token] %>
     <%= f.submit t('unsubscribes.show.yes_unsubscribe'),
-          class: "rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 cursor-pointer" %>
+          class: "btn btn--danger" %>
   <% end %>
 
-  <p class="mt-4 text-sm text-gray-500">
-    <%= link_to t('shared.cancel'), root_path, class: "text-gray-600 hover:text-gray-900 underline" %>
+  <p class="unsubscribe-page__cancel">
+    <%= link_to t('shared.cancel'), root_path, class: "text-link--muted" %>
   </p>
 </div>
