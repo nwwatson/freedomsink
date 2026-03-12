@@ -46,7 +46,7 @@
 
 <%# Post listing with infinite scroll %>
 <% if @posts.any? %>
-  <div class="space-y-8" data-controller="infinite-scroll">
+  <div class="post-listing" data-controller="infinite-scroll">
     <%= render "posts/post_page", posts: @posts, page: @page, next_page: @next_page, query: @query %>
   </div>
 <% elsif @query.present? %>

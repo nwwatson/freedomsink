@@ -1,6 +1,6 @@
 <div id="comment_form">
   <% if identity_signed_in? %>
-    <%= form_with model: Comment.new, url: post_comments_path(post, slug: post.slug), class: "space-y-3" do |f| %>
+    <%= form_with model: Comment.new, url: post_comments_path(post, slug: post.slug), class: "comment-form" do |f| %>
       <% if defined?(comment) && comment&.errors&.any? %>
         <div class="comment-form__errors"><%= comment.errors.full_messages.to_sentence %></div>
       <% end %>
@@ -40,7 +40,7 @@
   <% else %>
     <div class="comment-form__guest-prompt">
       <p><%= t('comments.form.subscribe_to_join') %></p>
-      <div class="mx-auto mt-3 max-w-sm">
+      <div class="comment-form__guest-form-wrapper">
         <%= render "subscriptions/form", source_post_id: post.id %>
       </div>
     </div>

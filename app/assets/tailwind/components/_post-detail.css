@@ -75,3 +75,11 @@
 .post-detail__comments-list {
   @apply mt-4 divide-y divide-gray-100 dark:divide-gray-700;
 }
+
+.post-detail__featured-image-img {
+  @apply w-full rounded-lg;
+}
+
+.post-detail__comments-form {
+  @apply mt-6;
+}

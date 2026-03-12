@@ -18,7 +18,7 @@
       <p class="post-detail__subtitle"><%= @post.subtitle %></p>
     <% end %>
     <div class="post-detail__meta post-meta">
-      <span><%= t('shared.by') %> <strong><%= author_link(@post.user, class: "text-charcoal hover:text-ink-blue transition-colors font-bold") %></strong></span>
+      <span><%= t('shared.by') %> <strong><%= author_link(@post.user, class: "text-link font-bold") %></strong></span>
       <span class="post-meta__separator">&middot;</span>
       <time datetime="<%= @post.published_at.iso8601 %>"><%= @post.published_at.strftime("%B %-d, %Y") %></time>
       <span class="post-meta__separator">&middot;</span>
@@ -32,7 +32,7 @@
 
   <% if @post.featured_image.attached? %>
     <div class="post-detail__featured-image">
-      <%= optimized_featured_image_tag(@post, class: "w-full rounded-lg", alt: @post.title) %>
+      <%= optimized_featured_image_tag(@post, class: "post-detail__featured-image-img", alt: @post.title) %>
     </div>
   <% end %>
 
@@ -83,7 +83,7 @@
       <% end %>
     </div>
 
-    <div class="mt-6">
+    <div class="post-detail__comments-form">
       <%= render "comments/form", post: @post %>
     </div>
   </div>

@@ -63,3 +63,11 @@
 .comment-form__guest-prompt {
   @apply rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center text-sm text-gray-500 dark:text-gray-400;
 }
+
+.comment-form {
+  @apply space-y-3;
+}
+
+.comment-form__guest-form-wrapper {
+  @apply mx-auto mt-3 max-w-sm;
+}
