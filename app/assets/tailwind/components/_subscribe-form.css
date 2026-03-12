@@ -1,0 +1,21 @@
+/* ==========================================================================
+ * .subscribe-form — Email subscription form BEM block
+ *
+ * Usage:
+ *   .subscribe-form          Flex container for input + submit
+ *   .subscribe-form__input   Email input (compose with .form-input)
+ *   .subscribe-form__submit  Submit button (compose with .btn .btn--primary)
+ *   .subscribe-form__error   Validation error message
+ * ========================================================================== */
+
+.subscribe-form {
+  @apply flex gap-2;
+}
+
+.subscribe-form__input {
+  @apply flex-1;
+}
+
+.subscribe-form__error {
+  @apply mt-2 text-sm text-red-600 dark:text-red-400;
+}
