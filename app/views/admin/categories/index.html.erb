@@ -1,13 +1,27 @@
 <% content_for(:title, "Categories — #{site_name}") %>
 
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <h1 class="text-2xl font-bold text-gray-900"><%= t('admin.categories.index.title') %></h1>
-    <%= link_to t('admin.categories.index.new_category'), new_admin_category_path, class: "rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700" %>
+    <%= link_to t('admin.categories.index.new_category'), new_admin_category_path, class: "self-start rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700" %>
   </div>
 
   <% if @categories.any? %>
-    <div class="overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg">
+    <%# Mobile card layout %>
+    <div class="space-y-3 lg:hidden">
+      <% @categories.each do |category| %>
+        <%= link_to edit_admin_category_path(category), class: "block rounded-lg bg-white p-4 shadow ring-1 ring-gray-200" do %>
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-gray-900"><%= category.name %></p>
+            <p class="text-sm text-gray-500"><%= category.posts.count %> posts</p>
+          </div>
+          <p class="mt-1 text-xs text-gray-500 font-mono"><%= category.slug %></p>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%# Desktop table layout %>
+    <div class="hidden overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg lg:block">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

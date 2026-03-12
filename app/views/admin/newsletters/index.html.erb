@@ -1,24 +1,52 @@
 <% content_for(:title, "Newsletters — #{site_name}") %>
 
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <h1 class="text-2xl font-bold text-gray-900"><%= t('admin.newsletters.index.title') %></h1>
-    <%= link_to t('admin.newsletters.index.new_newsletter'), new_admin_newsletter_path, class: "rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700" %>
+    <%= link_to t('admin.newsletters.index.new_newsletter'), new_admin_newsletter_path, class: "self-start rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700" %>
   </div>
 
   <%# Status tabs %>
   <div class="border-b border-gray-200">
-    <nav class="-mb-px flex space-x-8">
-      <%= link_to t('shared.all'), admin_newsletters_path, class: "border-b-2 #{params[:status].blank? ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
-      <%= link_to t('shared.sent'), admin_newsletters_path(status: "sent"), class: "border-b-2 #{params[:status] == 'sent' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
-      <%= link_to t('shared.scheduled'), admin_newsletters_path(status: "scheduled"), class: "border-b-2 #{params[:status] == 'scheduled' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
-      <%= link_to t('shared.drafts'), admin_newsletters_path(status: "draft"), class: "border-b-2 #{params[:status] == 'draft' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
+    <nav class="-mb-px flex space-x-4 overflow-x-auto sm:space-x-8">
+      <%= link_to t('shared.all'), admin_newsletters_path, class: "whitespace-nowrap border-b-2 #{params[:status].blank? ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
+      <%= link_to t('shared.sent'), admin_newsletters_path(status: "sent"), class: "whitespace-nowrap border-b-2 #{params[:status] == 'sent' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
+      <%= link_to t('shared.scheduled'), admin_newsletters_path(status: "scheduled"), class: "whitespace-nowrap border-b-2 #{params[:status] == 'scheduled' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
+      <%= link_to t('shared.drafts'), admin_newsletters_path(status: "draft"), class: "whitespace-nowrap border-b-2 #{params[:status] == 'draft' ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} px-1 pb-4 text-sm font-medium" %>
     </nav>
   </div>
 
   <%# Newsletter list %>
   <% if @newsletters.any? %>
-    <div class="overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg">
+    <%# Mobile card layout %>
+    <div class="space-y-3 lg:hidden">
+      <% @newsletters.each do |newsletter| %>
+        <%= link_to edit_admin_newsletter_path(newsletter), class: "block rounded-lg bg-white p-4 shadow ring-1 ring-gray-200" do %>
+          <div class="flex items-start justify-between gap-3">
+            <p class="min-w-0 text-sm font-medium text-gray-900"><%= newsletter.title %></p>
+            <span class="inline-flex flex-shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium
+              <%= case newsletter.status
+                  when 'sent' then 'bg-green-100 text-green-800'
+                  when 'sending' then 'bg-blue-100 text-blue-800'
+                  when 'scheduled' then 'bg-yellow-100 text-yellow-800'
+                  when 'draft' then 'bg-gray-100 text-gray-800'
+                  end %>">
+              <%= newsletter.status.capitalize %>
+            </span>
+          </div>
+          <div class="mt-2 flex items-center gap-3 text-xs text-gray-500">
+            <% if newsletter.sent? %>
+              <span><%= newsletter.recipients_count %> <%= t('admin.newsletters.index.recipients').downcase %></span>
+              <span>&middot;</span>
+            <% end %>
+            <span><%= newsletter.sent_at&.strftime("%b %-d, %Y") || newsletter.updated_at.strftime("%b %-d, %Y") %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%# Desktop table layout %>
+    <div class="hidden overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg lg:block">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

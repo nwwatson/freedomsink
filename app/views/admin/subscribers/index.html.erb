@@ -1,23 +1,50 @@
 <% content_for(:title, "Subscribers — #{site_name}") %>
 
 <div class="space-y-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <h1 class="text-2xl font-bold text-gray-900"><%= t('admin.subscribers.index.title') %></h1>
     <p class="text-sm text-gray-500"><%= t('admin.subscribers.index.confirmed_of_total', confirmed: Subscriber.confirmed.count, total: Subscriber.count) %></p>
   </div>
 
   <% if @labels.any? %>
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <span class="text-sm text-gray-500"><%= t('admin.subscribers.index.filter_by_label') %></span>
-      <%= link_to t('shared.all'), admin_subscribers_path, class: "rounded-full px-3 py-1 text-xs font-medium #{params[:label].blank? ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
-      <% @labels.each do |label| %>
-        <%= link_to label.name, admin_subscribers_path(label: label.id), class: "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium #{params[:label].to_s == label.id.to_s ? 'text-white' : 'text-gray-700 bg-gray-100 hover:bg-gray-200'}", style: params[:label].to_s == label.id.to_s ? "background-color: #{label.color}" : "" %>
-      <% end %>
+      <div class="flex flex-wrap gap-2 overflow-x-auto">
+        <%= link_to t('shared.all'), admin_subscribers_path, class: "rounded-full px-3 py-1.5 text-xs font-medium #{params[:label].blank? ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
+        <% @labels.each do |label| %>
+          <%= link_to label.name, admin_subscribers_path(label: label.id), class: "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium #{params[:label].to_s == label.id.to_s ? 'text-white' : 'text-gray-700 bg-gray-100 hover:bg-gray-200'}", style: params[:label].to_s == label.id.to_s ? "background-color: #{label.color}" : "" %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
   <% if @subscribers.any? %>
-    <div class="overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg">
+    <%# Mobile card layout %>
+    <div class="space-y-3 lg:hidden">
+      <% @subscribers.each do |subscriber| %>
+        <%= link_to admin_subscriber_path(subscriber), class: "block rounded-lg bg-white p-4 shadow ring-1 ring-gray-200" do %>
+          <div class="flex items-start justify-between gap-3">
+            <p class="min-w-0 truncate text-sm font-medium text-gray-900"><%= subscriber.email %></p>
+            <span class="inline-flex flex-shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-medium <%= subscriber.confirmed? ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+              <%= subscriber.confirmed? ? t('shared.confirmed') : t('shared.pending') %>
+            </span>
+          </div>
+          <% if subscriber.subscriber_labels.any? %>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <% subscriber.subscriber_labels.each do |label| %>
+                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white" style="background-color: <%= label.color %>">
+                  <%= label.name %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+          <p class="mt-2 text-xs text-gray-500"><%= subscriber.created_at.strftime("%b %-d, %Y") %></p>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%# Desktop table layout %>
+    <div class="hidden overflow-hidden bg-white shadow ring-1 ring-gray-200 sm:rounded-lg lg:block">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

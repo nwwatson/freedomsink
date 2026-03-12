@@ -1,6 +1,6 @@
 <% content_for(:title, "#{@post.title} Analytics — #{site_name}") %>
 
-<div class="flex items-center justify-between">
+<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
   <div>
     <h1 class="text-2xl font-bold text-gray-900"><%= @post.title %></h1>
     <p class="mt-1 text-sm text-gray-500">
@@ -12,44 +12,44 @@
       · <%= @post.user.display_name %>
     </p>
   </div>
-  <div class="flex space-x-3">
+  <div class="flex flex-wrap gap-2">
     <%= link_to t('admin.post_dashboard.show.edit_post'), edit_admin_post_path(@post), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
     <%= link_to t('admin.post_dashboard.show.view_live'), post_path(@post, slug: @post.slug), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50", target: "_blank" %>
   </div>
 </div>
 
-<div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+<div class="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
   <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="p-5">
+    <div class="p-4 sm:p-5">
       <div class="text-sm font-medium text-gray-500 truncate"><%= t('admin.post_dashboard.show.total_views') %></div>
-      <div class="mt-1 text-3xl font-semibold text-gray-900"><%= @views_count %></div>
+      <div class="mt-1 text-2xl font-semibold text-gray-900 sm:text-3xl"><%= @views_count %></div>
     </div>
   </div>
 
   <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="p-5">
+    <div class="p-4 sm:p-5">
       <div class="text-sm font-medium text-gray-500 truncate"><%= t('admin.post_dashboard.show.unique_viewers') %></div>
-      <div class="mt-1 text-3xl font-semibold text-gray-900"><%= @unique_viewers %></div>
+      <div class="mt-1 text-2xl font-semibold text-gray-900 sm:text-3xl"><%= @unique_viewers %></div>
     </div>
   </div>
 
   <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="p-5">
+    <div class="p-4 sm:p-5">
       <div class="text-sm font-medium text-gray-500 truncate"><%= t('admin.post_dashboard.show.loves') %></div>
-      <div class="mt-1 text-3xl font-semibold text-gray-900"><%= @post.loves_count %></div>
+      <div class="mt-1 text-2xl font-semibold text-gray-900 sm:text-3xl"><%= @post.loves_count %></div>
     </div>
   </div>
 
   <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="p-5">
+    <div class="p-4 sm:p-5">
       <div class="text-sm font-medium text-gray-500 truncate"><%= t('admin.post_dashboard.show.engagement_rate') %></div>
-      <div class="mt-1 text-3xl font-semibold text-gray-900"><%= @engagement_rate %>%</div>
+      <div class="mt-1 text-2xl font-semibold text-gray-900 sm:text-3xl"><%= @engagement_rate %>%</div>
     </div>
   </div>
 </div>
 
 <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-  <div class="bg-white shadow rounded-lg p-6">
+  <div class="bg-white shadow rounded-lg p-4 sm:p-6">
     <h2 class="text-lg font-medium text-gray-900"><%= t('admin.post_dashboard.show.views_last_30_days') %></h2>
     <div class="mt-4" data-controller="chart" data-chart-type-value="line" data-chart-data-value="<%= @views_by_day.to_json %>">
       <canvas data-chart-target="canvas" class="w-full" height="200"></canvas>
@@ -59,7 +59,7 @@
     <% end %>
   </div>
 
-  <div class="bg-white shadow rounded-lg p-6">
+  <div class="bg-white shadow rounded-lg p-4 sm:p-6">
     <h2 class="text-lg font-medium text-gray-900"><%= t('admin.post_dashboard.show.traffic_sources') %></h2>
     <% if @traffic_sources.any? %>
       <div class="mt-4 space-y-3">
@@ -83,14 +83,14 @@
   </div>
 </div>
 
-<div class="mt-8 bg-white shadow rounded-lg p-6">
+<div class="mt-8 bg-white shadow rounded-lg p-4 sm:p-6">
   <h2 class="text-lg font-medium text-gray-900 mb-4"><%= t('admin.post_dashboard.show.comments', count: @post.comments.approved.count) %></h2>
   <% comments = @post.comments.includes(:identity).order(created_at: :desc).limit(10) %>
   <% if comments.any? %>
     <div class="space-y-4">
       <% comments.each do |comment| %>
         <div class="border-b border-gray-200 pb-4 last:border-0">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <p class="text-sm font-medium text-gray-900"><%= comment.identity.handle || comment.identity.name %></p>
             <div class="flex items-center space-x-2">
               <span class="text-xs text-gray-500"><%= comment.created_at.strftime("%b %d, %Y") %></span>

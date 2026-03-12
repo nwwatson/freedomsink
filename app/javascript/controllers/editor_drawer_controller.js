@@ -20,10 +20,21 @@ export default class extends Controller {
     this.boundKeydown = this.keydown.bind(this)
     document.addEventListener("keydown", this.boundKeydown)
     this.hasBeenOpened = false
+
+    this.smQuery = window.matchMedia("(min-width: 640px)")
+    this.boundResize = this.handleResize.bind(this)
+    this.smQuery.addEventListener("change", this.boundResize)
   }
 
   disconnect() {
     document.removeEventListener("keydown", this.boundKeydown)
+    this.smQuery.removeEventListener("change", this.boundResize)
+  }
+
+  handleResize(event) {
+    if (!event.matches && this.pinnedValue) {
+      this.unpin()
+    }
   }
 
   get isOpen() {
@@ -131,6 +142,7 @@ export default class extends Controller {
   }
 
   pin() {
+    if (!this.smQuery.matches) return
     this.pinnedValue = true
     this.overlayTarget.classList.add("hidden")
     this.overlayTarget.classList.add("opacity-0")

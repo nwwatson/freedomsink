@@ -12,76 +12,30 @@
   </head>
 
   <body class="h-full">
-    <div class="flex h-full">
-      <%# Sidebar %>
+    <div class="flex h-full" data-controller="admin-sidebar">
+      <%# Desktop sidebar (static) %>
       <aside class="hidden w-64 flex-shrink-0 border-r border-gray-200 bg-white lg:block">
-        <div class="flex h-full flex-col">
-          <%# Logo %>
-          <div class="flex h-16 items-center border-b border-gray-200 px-6">
-            <span class="text-xl font-bold text-gray-900"><%= site_name %></span>
-          </div>
+        <%= render "layouts/admin_sidebar_content" %>
+      </aside>
 
-          <%# Navigation %>
-          <nav class="flex-1 space-y-1 px-3 py-4">
-            <div class="space-y-1">
-              <%= admin_nav_link t('shared.home'), admin_root_path, icon: "home" %>
-            </div>
-
-            <div class="pt-4">
-              <p class="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400"><%= t('layouts.admin.content') %></p>
-              <div class="mt-2 space-y-1">
-                <%= admin_nav_link t('layouts.admin.all_posts'), admin_posts_path, icon: "document" %>
-                <div class="ml-5 space-y-0.5">
-                  <%= admin_nav_link t('shared.published'), admin_posts_path(status: "published"), icon: "check-circle", small: true %>
-                  <%= admin_nav_link t('shared.scheduled'), admin_posts_path(status: "scheduled"), icon: "clock", small: true %>
-                  <%= admin_nav_link t('shared.drafts'), admin_posts_path(status: "draft"), icon: "pencil", small: true %>
-                </div>
-                <%= admin_nav_link t('layouts.admin.pages'), admin_pages_path, icon: "document-text" %>
-              </div>
-            </div>
-
-            <div class="pt-4">
-              <p class="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400"><%= t('layouts.admin.audience') %></p>
-              <div class="mt-2 space-y-1">
-                <%= admin_nav_link t('layouts.admin.subscribers'), admin_subscribers_path, icon: "users" %>
-                <%= admin_nav_link t('layouts.admin.labels'), admin_subscriber_labels_path, icon: "tag" %>
-                <%= admin_nav_link t('layouts.admin.segments'), admin_segments_path, icon: "funnel" %>
-                <%= admin_nav_link t('layouts.admin.newsletters'), admin_newsletters_path, icon: "envelope" %>
-                <%= admin_nav_link t('layouts.admin.newsletter_settings'), edit_admin_newsletter_settings_path, icon: "adjustments" %>
-                <%= admin_nav_link t('layouts.admin.growth'), admin_growth_path, icon: "trending-up" %>
-                <%= admin_nav_link t('layouts.admin.traffic'), admin_traffic_path, icon: "chart-bar" %>
-              </div>
-            </div>
-
-            <div class="pt-4">
-              <p class="px-3 text-xs font-semibold uppercase tracking-wider text-gray-400"><%= t('layouts.admin.system') %></p>
-              <div class="mt-2 space-y-1">
-                <%= admin_nav_link t('layouts.admin.profile'), edit_admin_profile_path, icon: "user-circle" %>
-                <%= admin_nav_link t('layouts.admin.settings'), edit_admin_settings_path, icon: "cog" %>
-                <%= admin_nav_link t('layouts.admin.passkeys'), admin_passkeys_path, icon: "finger-print" %>
-                <%= admin_nav_link t('layouts.admin.api_tokens'), admin_api_tokens_path, icon: "key" %>
-              </div>
-            </div>
-          </nav>
-
-          <%# User menu %>
-          <div class="border-t border-gray-200 p-4">
-            <div class="flex items-center">
-              <div class="flex-1 truncate">
-                <p class="text-sm font-medium text-gray-900"><%= current_user.display_name %></p>
-                <p class="truncate text-xs text-gray-500"><%= current_user.email %></p>
-              </div>
-              <%= button_to t('shared.sign_out'), admin_session_path, method: :delete,
-                    class: "ml-2 text-xs text-gray-400 hover:text-gray-600" %>
-            </div>
-          </div>
-        </div>
+      <%# Mobile sidebar (slide-over) %>
+      <div data-admin-sidebar-target="backdrop"
+           data-action="click->admin-sidebar#close"
+           class="fixed inset-0 z-40 bg-black/30 transition-opacity duration-300 hidden opacity-0 lg:hidden"></div>
+      <aside data-admin-sidebar-target="sidebar"
+             class="fixed inset-y-0 left-0 z-50 w-64 -translate-x-full border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out lg:hidden">
+        <%= render "layouts/admin_sidebar_content", show_close: true %>
       </aside>
 
       <%# Main content %>
       <div class="flex flex-1 flex-col overflow-hidden">
         <%# Mobile header %>
         <header class="flex h-16 items-center border-b border-gray-200 bg-white px-4 lg:hidden">
+          <button type="button" data-action="click->admin-sidebar#open" class="mr-3 rounded-md p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:outline-none">
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
           <span class="text-xl font-bold text-gray-900"><%= site_name %></span>
         </header>
 
@@ -98,7 +52,7 @@
         <% end %>
 
         <%# Page content %>
-        <main class="flex-1 overflow-y-auto p-6">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
           <%= yield %>
         </main>
       </div>
