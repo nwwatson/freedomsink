@@ -63,9 +63,17 @@ es:
       all_posts: "Todas las publicaciones"
       audience: "Audiencia"
       subscribers: "Suscriptores"
+      labels: "Etiquetas"
+      segments: "Segmentos"
       newsletters: "Boletines"
       newsletter_settings: "Configuración de boletín"
       growth: "Crecimiento"
+      traffic: "Tráfico"
+      memberships: "Membresías"
+      membership_tiers: "Niveles"
+      members: "Miembros"
+      revenue: "Ingresos"
+      payment_settings: "Configuración de pagos"
       system: "Sistema"
       profile: "Perfil"
       pages: "Páginas"
@@ -90,18 +98,41 @@ es:
     post_page:
       load_more: "Cargar más"
       loading_more: "Cargando más publicaciones…"
+    paywall:
+      members_heading: "Esta publicación es solo para miembros"
+      members_description: "Suscríbete a %{site_name} para leer esta publicación y acceder a todo el contenido para miembros."
+      subscribe_cta: "Suscríbete para leer"
+      paid_heading: "Esta publicación es para miembros de pago"
+      paid_description: "Conviértete en miembro de pago de %{site_name} para acceder a este y todo el contenido premium."
+      upgrade_cta: "Ver opciones de membresía"
+
+  memberships:
+    index:
+      title: "Membresía"
+      subtitle: "Apoya a %{site_name} con una membresía de pago."
+      subscribe: "Suscribirse"
+      manage: "Gestionar suscripción"
+      sign_in_to_subscribe: "Inicia sesión para suscribirte"
+    success:
+      title: "¡Bienvenido a bordo!"
+      description: "Tu membresía está activa. Tienes acceso completo a todo el contenido."
+      continue_reading: "Continuar leyendo"
 
   subscriptions:
     form:
       email_placeholder: "tu@email.com"
 
   comments:
+    deleted: "[eliminado]"
+    edited: "editado"
+    delete_confirm: "¿Eliminar este comentario?"
     form:
       write: "Escribir"
       preview: "Vista previa"
       placeholder: "Comparte tus pensamientos... (markdown compatible)"
       comment: "Comentar"
       subscribe_to_join: "Suscríbete para unirte a la conversación."
+      notify_on_reply: "Notificarme de respuestas"
 
   authors:
     index:
@@ -179,6 +210,14 @@ es:
         newsletter: "Boletín"
         recipients: "Destinatarios"
         no_newsletters_sent: "Aún no se han enviado boletines."
+        vs_last_month: "vs mes anterior"
+        traffic_sources: "Fuentes de tráfico"
+        view_details: "Ver detalles"
+        no_traffic_data: "Aún no hay datos de tráfico."
+        top_engaged_posts: "Publicaciones más interactivas"
+        subscriber_acquisition: "Adquisición de suscriptores"
+        from_posts: "Desde publicaciones"
+        direct_signup: "Registro directo"
     posts:
       index:
         title: "Publicaciones"
@@ -201,6 +240,11 @@ es:
         category: "Categoría"
         tags: "Etiquetas"
         featured: "Destacado"
+        visibility: "Visibilidad"
+        visibility_public: "Público"
+        visibility_members_only: "Solo miembros"
+        visibility_paid_only: "Solo miembros de pago"
+        visibility_help: "Controla quién puede leer esta publicación."
         generate_with_ai: "Generar con IA"
         meta_description: "Meta descripción"
         meta_description_placeholder: "Breve descripción para motores de búsqueda (máx. 160 caracteres)"
@@ -220,6 +264,7 @@ es:
         ai_empty_state: "Pide ayuda a la IA para escribir o usa una acción rápida arriba."
         ai_placeholder: "Pregunta a la IA..."
         ai_send_hint: "Presiona Enter para enviar, Shift+Enter para nueva línea"
+        versions: "Versiones"
       featured_image_modal:
         title: "Generar imagen destacada"
         suggesting_prompt: "Sugiriendo un prompt..."
@@ -247,13 +292,62 @@ es:
         confirmed_of_total: "%{confirmed} confirmados de %{total} en total"
         email: "Correo electrónico"
         handle: "Nombre de usuario"
+        labels: "Etiquetas"
         status: "Estado"
         subscribed: "Suscrito"
+        filter_by_label: "Filtrar por etiqueta:"
         no_subscribers: "Aún no hay suscriptores."
       show:
         handle: "Nombre de usuario"
         status: "Estado"
         subscribed: "Suscrito"
+        labels: "Etiquetas"
+        add_label: "Agregar etiqueta"
+    subscriber_labels:
+      index:
+        title: "Etiquetas de suscriptores"
+        new_label: "Nueva etiqueta"
+        name: "Nombre"
+        color: "Color"
+        subscribers: "Suscriptores"
+        no_labels: "No hay etiquetas"
+        get_started: "Crea etiquetas para organizar tus suscriptores."
+      new:
+        title: "Nueva etiqueta"
+      edit:
+        title: "Editar etiqueta"
+    segments:
+      index:
+        title: "Segmentos"
+        new_segment: "Nuevo segmento"
+        name: "Nombre"
+        description: "Descripción"
+        subscribers: "Suscriptores"
+        no_segments: "No hay segmentos"
+        get_started: "Crea un segmento para dirigirte a suscriptores específicos."
+      new:
+        title: "Nuevo segmento"
+      edit:
+        title: "Editar segmento"
+      show:
+        matching_subscribers: "Suscriptores coincidentes"
+        labels: "Etiquetas"
+        no_subscribers: "Ningún suscriptor coincide con este segmento."
+      form:
+        filter_criteria: "Criterios de filtro"
+        labels: "Etiquetas"
+        any_of: "Tiene alguna de estas etiquetas"
+        all_of: "Tiene todas estas etiquetas"
+        none_of: "No tiene ninguna de estas etiquetas"
+        subscribed_after: "Suscrito después de"
+        subscribed_before: "Suscrito antes de"
+        engagement: "Interacción"
+        any_engagement: "Cualquier nivel de interacción"
+        active: "Activo (abrió/hizo clic en los últimos 90 días)"
+        inactive: "Inactivo (sin aperturas/clics en los últimos 90 días)"
+        engagement_help: "Basado en la actividad de apertura y clics de boletines en los últimos 90 días."
+      count:
+        matching_subscribers: "Suscriptores coincidentes"
     comments:
       index:
         title: "Comentarios"
@@ -262,6 +356,78 @@ es:
         reject: "Rechazar"
         delete_confirm: "¿Eliminar este comentario?"
         no_comments: "Aún no hay comentarios."
+    payment_settings:
+      edit:
+        title: "Configuración de pagos"
+        subtitle: "Conecta Stripe para aceptar membresías de pago."
+        stripe_keys: "Claves de API de Stripe"
+        stripe_description: "Ingresa tus claves de API de Stripe para habilitar membresías de pago. Las claves se cifran en reposo."
+        publishable_key: "Clave publicable"
+        secret_key: "Clave secreta"
+        webhook_secret: "Secreto de firma de webhook"
+        webhook_help: "Requerido para verificar eventos de webhook de Stripe."
+        webhook_url: "URL de webhook:"
+        currency: "Moneda"
+        currency_label: "Moneda predeterminada"
+        save_settings: "Guardar configuración"
+    membership_tiers:
+      index:
+        title: "Niveles de membresía"
+        new_tier: "Nuevo nivel"
+        name: "Nombre"
+        price: "Precio"
+        interval: "Intervalo"
+        status: "Estado"
+        members: "Miembros"
+        inactive: "Inactivo"
+        no_tiers: "No hay niveles de membresía"
+        get_started: "Crea tu primer nivel para comenzar a aceptar membresías de pago."
+      new:
+        title: "Nuevo nivel"
+      edit:
+        title: "Editar nivel"
+      form:
+        price_cents: "Precio (centavos)"
+        price_help: "Precio en la unidad más pequeña de la moneda (ej., 1000 = $10.00)."
+    memberships:
+      index:
+        title: "Miembros"
+        subscriber: "Suscriptor"
+        tier: "Nivel"
+        status: "Estado"
+        since: "Desde"
+        view: "Ver"
+        canceled: "Cancelado"
+        no_members: "Aún no hay miembros"
+        no_members_description: "Los miembros aparecerán aquí una vez que los suscriptores se registren para una membresía de pago."
+      show:
+        title: "Detalles de membresía"
+        back: "Volver a miembros"
+        subscriber: "Suscriptor"
+        tier: "Nivel"
+        status: "Estado"
+        member_since: "Miembro desde"
+        current_period_end: "Período actual termina"
+        stripe_subscription: "Suscripción de Stripe"
+        complimentary: "Cortesía"
+        cancel_membership: "Cancelar membresía"
+        cancel_confirm: "¿Estás seguro de que quieres cancelar esta membresía?"
+    revenue:
+      show:
+        title: "Ingresos"
+        subtitle: "Rastrea los ingresos de membresía y el crecimiento."
+        mrr: "Ingresos recurrentes mensuales"
+        arr: "Ingresos recurrentes anuales"
+        paid_members: "Miembros de pago"
+        churn_rate: "Tasa de cancelación"
+        new_members: "Nuevos miembros"
+        cancellations: "Cancelaciones"
+        net_growth: "Crecimiento neto"
+        monthly_growth: "Crecimiento mensual"
+        month: "Mes"
+        new: "Nuevos"
+        canceled_col: "Cancelados"
+        net: "Neto"
     passkeys:
       index:
         title: "Claves de acceso"
@@ -317,6 +483,8 @@ es:
         preheader_placeholder: "Texto de vista previa en la bandeja de entrada..."
         preheader_help: "Texto corto que se muestra en los clientes de correo antes de abrir. Máx. 150 caracteres."
         audience: "Audiencia"
+        all_subscribers: "Todos los suscriptores confirmados"
+        target_audience: "Audiencia objetivo"
         confirmed_subscribers: "suscriptores confirmados"
         sent: "Enviado"
         delivered_to: "Entregado a"
@@ -346,6 +514,14 @@ es:
         background_color: "Color de fondo"
         your_site_background: "Fondo de tu sitio"
         background_preview_help: "Así se verá el fondo de tu sitio con el color seleccionado."
+        theme_mode: "Modo de tema"
+        theme_mode_description: "Controla cómo funciona el modo oscuro en tu sitio."
+        theme_mode_visitor_choice: "Elección del visitante"
+        theme_mode_visitor_choice_description: "Los visitantes pueden alternar entre modo claro y oscuro. Respeta su preferencia del sistema por defecto."
+        theme_mode_light: "Siempre claro"
+        theme_mode_light_description: "Forzar modo claro para todos los visitantes. El botón de alternar tema se ocultará."
+        theme_mode_dark: "Siempre oscuro"
+        theme_mode_dark_description: "Forzar modo oscuro para todos los visitantes. El botón de alternar tema se ocultará."
         dark_theme: "Tema oscuro"
         dark_theme_description: "Configura la apariencia del modo oscuro de tu sitio. Los visitantes pueden alternar el modo oscuro usando el ícono de sol/luna en el encabezado."
         dark_theme_label: "Tema oscuro"
@@ -364,6 +540,14 @@ es:
         preview_heading: "El veloz murciélago hindú"
         preview_subtitle: "Comía feliz cardillo y kiwi"
         preview_body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+        payment_configuration: "Configuración de Pagos"
+        payment_description: "Conecta Stripe para aceptar membresías de pago. Las claves se almacenan cifradas."
+        stripe_publishable_key: "Clave Publicable de Stripe"
+        stripe_secret_key: "Clave Secreta de Stripe"
+        stripe_webhook_secret: "Secreto de Webhook de Stripe"
+        webhook_help: "Requerido para verificar eventos de webhook de Stripe."
+        webhook_url: "URL de Webhook:"
+        payments_currency: "Moneda predeterminada"
         ai_configuration: "Configuración de IA"
         ai_description: "Proporciona tus claves de API para habilitar las funciones de escritura con IA. Elimina las claves para desactivar todas las funciones de IA."
         anthropic_api_key: "Clave de API de Anthropic"
@@ -439,6 +623,28 @@ es:
         post: "Publicación"
         subscribers: "Suscriptores"
         no_post_subscribers: "Aún no hay suscriptores atribuidos a publicaciones. Los suscriptores que se registren desde una página de publicación se rastrearán aquí en adelante."
+    traffic:
+      show:
+        title: "Análisis de tráfico"
+        subtitle: "Entiende de dónde vienen tus visitantes."
+        total_views: "Vistas totales"
+        unique_viewers: "Visitantes únicos"
+        top_source: "Fuente principal"
+        views_over_time: "Vistas a lo largo del tiempo"
+        no_data: "No hay datos de vistas para este período."
+        traffic_sources: "Fuentes de tráfico"
+        no_traffic_data: "Aún no hay datos de tráfico."
+        top_referrer_domains: "Dominios de referencia principales"
+        domain: "Dominio"
+        views: "Vistas"
+        no_referrer_data: "Aún no hay datos de referencia."
+        utm_campaigns: "Campañas UTM"
+        campaign: "Campaña"
+        no_utm_data: "Aún no hay datos UTM."
+        utm_sources: "Fuentes UTM"
+        source: "Fuente"
+        utm_mediums: "Medios UTM"
+        medium: "Medio"
     post_dashboard:
       show:
         edit_post: "Editar publicación"
@@ -503,6 +709,26 @@ es:
         generated_image: "Imagen destacada generada"
         save_as_featured: "Guardar como imagen destacada"
         regenerate: "Regenerar"
+    post_versions:
+      index:
+        save_version: "Guardar versión"
+        diff: "Diferencia"
+        no_versions: "Sin versiones aún. Las versiones se guardan automáticamente mientras editas."
+      show:
+        restore: "Restaurar"
+        restore_confirm: "¿Restaurar esta versión? Tu contenido actual será reemplazado."
+        back: "Volver"
+        title_change: "Título cambiado"
+        content_diff: "Cambios en el contenido"
+
+  comment_mailer:
+    reply_notification:
+      subject: "Nueva respuesta a tu comentario en %{site_name}"
+      heading: "Nueva respuesta en %{site_name}"
+      body: "%{name} respondió a tu comentario en \"%{post_title}\":"
+      view_comment: "Ver respuesta"
+      unsubscribe_html: "¿No quieres notificaciones de respuestas? <a href=\"%{url}\" style=\"color: #71717a;\">Cancelar suscripción</a>"
+      unsubscribe_text: "¿No quieres notificaciones de respuestas? Cancela aquí"
 
   subscriber_mailer:
     confirmation:
@@ -533,6 +759,9 @@ es:
     ai:
       configurable:
         add_api_keys: "Agrega tus claves de API en Configuración para habilitar las funciones de IA."
+    memberships:
+      sign_in_required: "Por favor inicia sesión para suscribirte a una membresía."
+      no_subscription: "No se encontró suscripción activa."
     subscriptions:
       check_email: "Revisa tu correo electrónico para obtener un enlace de inicio de sesión."
       invalid_email: "Por favor ingresa una dirección de correo electrónico válida."
@@ -553,6 +782,11 @@ es:
       approved: "Comentario aprobado."
       rejected: "Comentario rechazado."
       deleted: "Comentario eliminado."
+      cannot_edit: "Este comentario ya no se puede editar."
+      cannot_delete: "No puedes eliminar este comentario."
+    comment_notifications:
+      unsubscribed: "Ya no recibirás notificaciones de respuestas para este comentario."
+      invalid_link: "Enlace de notificación inválido o expirado."
     admin:
       settings:
         saved: "Configuración guardada."
@@ -577,6 +811,19 @@ es:
         created: "Página creada."
         updated: "Página actualizada."
         deleted: "Página eliminada."
+      subscriber_labels:
+        created: "Etiqueta creada."
+        updated: "Etiqueta actualizada."
+        deleted: "Etiqueta eliminada."
+      segments:
+        created: "Segmento creado."
+        updated: "Segmento actualizado."
+        deleted: "Segmento eliminado."
+      subscriber_labelings:
+        already_assigned: "La etiqueta ya está asignada a este suscriptor."
+      post_versions:
+        created: "Versión guardada."
+        restored: "Versión restaurada."
       categories:
         created: "Categoría creada."
         updated: "Categoría actualizada."
@@ -584,6 +831,16 @@ es:
       passkeys:
         registered: "Clave de acceso registrada exitosamente."
         removed: "Clave de acceso eliminada."
+      payment_settings:
+        saved: "Configuración de pagos guardada."
+      membership_tiers:
+        created: "Nivel creado."
+        updated: "Nivel actualizado."
+        deleted: "Nivel eliminado."
+        has_members: "No se puede eliminar un nivel con miembros activos."
+      memberships:
+        canceled: "Membresía cancelada."
+        comp_granted: "Membresía de cortesía otorgada."
       api_tokens:
         created: "Token de API creado."
         revoked: "Token de API revocado."

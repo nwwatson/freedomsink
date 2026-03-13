@@ -1,0 +1,41 @@
+/* ==========================================================================
+ * .love-btn — Love/heart button BEM block
+ *
+ * The post "love" interaction button with liked, unliked, and disabled states.
+ *
+ * Usage:
+ *   .love-btn              Container (inline flex row)
+ *   .love-btn--liked       Liked state (red, filled heart)
+ *   .love-btn--unliked     Unliked state (gray, outline heart, hover red)
+ *   .love-btn--disabled    Unauthenticated/disabled state (gray, no interaction)
+ *   .love-btn__icon        Heart SVG icon
+ *   .love-btn__count       Love count text
+ * ========================================================================== */
+
+.love-btn {
+  @apply inline-flex items-center space-x-1;
+}
+
+.love-btn--liked {
+  @apply text-red-500 hover:text-red-600;
+}
+
+.love-btn--unliked {
+  @apply text-gray-400 dark:text-gray-500 hover:text-red-500;
+}
+
+.love-btn--disabled {
+  @apply text-gray-400 dark:text-gray-500;
+}
+
+.love-btn__icon {
+  @apply h-5 w-5;
+}
+
+.love-btn--liked .love-btn__icon {
+  @apply fill-current;
+}
+
+.love-btn__count {
+  @apply text-sm font-medium;
+}

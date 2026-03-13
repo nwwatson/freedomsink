@@ -65,9 +65,17 @@ en:
       all_posts: "All Posts"
       audience: "Audience"
       subscribers: "Subscribers"
+      labels: "Labels"
+      segments: "Segments"
       newsletters: "Newsletters"
       newsletter_settings: "Newsletter Settings"
       growth: "Growth"
+      traffic: "Traffic"
+      memberships: "Memberships"
+      membership_tiers: "Tiers"
+      members: "Members"
+      revenue: "Revenue"
+      payment_settings: "Payment Settings"
       system: "System"
       profile: "Profile"
       pages: "Pages"
@@ -93,18 +101,41 @@ en:
     post_page:
       load_more: "Load more"
       loading_more: "Loading more posts…"
+    paywall:
+      members_heading: "This post is for members only"
+      members_description: "Subscribe to %{site_name} to read this post and get access to all member content."
+      subscribe_cta: "Subscribe to read"
+      paid_heading: "This post is for paid members"
+      paid_description: "Become a paid member of %{site_name} to access this and all premium content."
+      upgrade_cta: "See membership options"
+
+  memberships:
+    index:
+      title: "Membership"
+      subtitle: "Support %{site_name} with a paid membership."
+      subscribe: "Subscribe"
+      manage: "Manage subscription"
+      sign_in_to_subscribe: "Sign in to subscribe"
+    success:
+      title: "Welcome aboard!"
+      description: "Your membership is now active. You have full access to all content."
+      continue_reading: "Continue reading"
 
   subscriptions:
     form:
       email_placeholder: "your@email.com"
 
   comments:
+    deleted: "[deleted]"
+    edited: "edited"
+    delete_confirm: "Delete this comment?"
     form:
       write: "Write"
       preview: "Preview"
       placeholder: "Share your thoughts... (markdown supported)"
       comment: "Comment"
       subscribe_to_join: "Subscribe to join the conversation."
+      notify_on_reply: "Notify me of replies"
 
   authors:
     index:
@@ -183,6 +214,14 @@ en:
         newsletter: "Newsletter"
         recipients: "Recipients"
         no_newsletters_sent: "No newsletters sent yet."
+        vs_last_month: "vs last month"
+        traffic_sources: "Traffic Sources"
+        view_details: "View details"
+        no_traffic_data: "No traffic data yet."
+        top_engaged_posts: "Top Engaged Posts"
+        subscriber_acquisition: "Subscriber Acquisition"
+        from_posts: "From posts"
+        direct_signup: "Direct signup"
     posts:
       index:
         title: "Posts"
@@ -205,6 +244,11 @@ en:
         category: "Category"
         tags: "Tags"
         featured: "Featured"
+        visibility: "Visibility"
+        visibility_public: "Public"
+        visibility_members_only: "Members only"
+        visibility_paid_only: "Paid members only"
+        visibility_help: "Control who can read this post."
         generate_with_ai: "Generate with AI"
         meta_description: "Meta description"
         meta_description_placeholder: "Brief description for search engines (max 160 characters)"
@@ -224,6 +268,7 @@ en:
         ai_empty_state: "Ask AI for writing help or use a quick action above."
         ai_placeholder: "Ask AI..."
         ai_send_hint: "Press Enter to send, Shift+Enter for new line"
+        versions: "Versions"
       featured_image_modal:
         title: "Generate Featured Image"
         suggesting_prompt: "Suggesting a prompt..."
@@ -251,13 +296,62 @@ en:
         confirmed_of_total: "%{confirmed} confirmed of %{total} total"
         email: "Email"
         handle: "Handle"
+        labels: "Labels"
         status: "Status"
         subscribed: "Subscribed"
+        filter_by_label: "Filter by label:"
         no_subscribers: "No subscribers yet."
       show:
         handle: "Handle"
         status: "Status"
         subscribed: "Subscribed"
+        labels: "Labels"
+        add_label: "Add label"
+    subscriber_labels:
+      index:
+        title: "Subscriber Labels"
+        new_label: "New Label"
+        name: "Name"
+        color: "Color"
+        subscribers: "Subscribers"
+        no_labels: "No labels"
+        get_started: "Create labels to organize your subscribers."
+      new:
+        title: "New Label"
+      edit:
+        title: "Edit Label"
+    segments:
+      index:
+        title: "Segments"
+        new_segment: "New Segment"
+        name: "Name"
+        description: "Description"
+        subscribers: "Subscribers"
+        no_segments: "No segments"
+        get_started: "Create a segment to target specific subscribers."
+      new:
+        title: "New Segment"
+      edit:
+        title: "Edit Segment"
+      show:
+        matching_subscribers: "Matching subscribers"
+        labels: "Labels"
+        no_subscribers: "No subscribers match this segment."
+      form:
+        filter_criteria: "Filter Criteria"
+        labels: "Labels"
+        any_of: "Has any of these labels"
+        all_of: "Has all of these labels"
+        none_of: "Has none of these labels"
+        subscribed_after: "Subscribed after"
+        subscribed_before: "Subscribed before"
+        engagement: "Engagement"
+        any_engagement: "Any engagement level"
+        active: "Active (opened/clicked in last 90 days)"
+        inactive: "Inactive (no opens/clicks in last 90 days)"
+        engagement_help: "Based on newsletter open and click activity in the last 90 days."
+      count:
+        matching_subscribers: "Matching subscribers"
     comments:
       index:
         title: "Comments"
@@ -266,6 +360,78 @@ en:
         reject: "Reject"
         delete_confirm: "Delete this comment?"
         no_comments: "No comments yet."
+    payment_settings:
+      edit:
+        title: "Payment Settings"
+        subtitle: "Connect Stripe to accept paid memberships."
+        stripe_keys: "Stripe API Keys"
+        stripe_description: "Enter your Stripe API keys to enable paid memberships. Keys are encrypted at rest."
+        publishable_key: "Publishable Key"
+        secret_key: "Secret Key"
+        webhook_secret: "Webhook Signing Secret"
+        webhook_help: "Required to verify webhook events from Stripe."
+        webhook_url: "Webhook URL:"
+        currency: "Currency"
+        currency_label: "Default currency"
+        save_settings: "Save settings"
+    membership_tiers:
+      index:
+        title: "Membership Tiers"
+        new_tier: "New Tier"
+        name: "Name"
+        price: "Price"
+        interval: "Interval"
+        status: "Status"
+        members: "Members"
+        inactive: "Inactive"
+        no_tiers: "No membership tiers"
+        get_started: "Create your first tier to start accepting paid memberships."
+      new:
+        title: "New Tier"
+      edit:
+        title: "Edit Tier"
+      form:
+        price_cents: "Price (cents)"
+        price_help: "Price in the smallest currency unit (e.g., 1000 = $10.00)."
+    memberships:
+      index:
+        title: "Members"
+        subscriber: "Subscriber"
+        tier: "Tier"
+        status: "Status"
+        since: "Since"
+        view: "View"
+        canceled: "Canceled"
+        no_members: "No members yet"
+        no_members_description: "Members will appear here once subscribers sign up for a paid membership."
+      show:
+        title: "Membership Details"
+        back: "Back to members"
+        subscriber: "Subscriber"
+        tier: "Tier"
+        status: "Status"
+        member_since: "Member since"
+        current_period_end: "Current period ends"
+        stripe_subscription: "Stripe subscription"
+        complimentary: "Complimentary"
+        cancel_membership: "Cancel membership"
+        cancel_confirm: "Are you sure you want to cancel this membership?"
+    revenue:
+      show:
+        title: "Revenue"
+        subtitle: "Track your membership revenue and growth."
+        mrr: "Monthly Recurring Revenue"
+        arr: "Annual Recurring Revenue"
+        paid_members: "Paid Members"
+        churn_rate: "Churn Rate"
+        new_members: "New Members"
+        cancellations: "Cancellations"
+        net_growth: "Net Growth"
+        monthly_growth: "Monthly Growth"
+        month: "Month"
+        new: "New"
+        canceled_col: "Canceled"
+        net: "Net"
     passkeys:
       index:
         title: "Passkeys"
@@ -321,6 +487,8 @@ en:
         preheader_placeholder: "Preview text shown in inbox..."
         preheader_help: "Short text shown in email clients before opening. Max 150 characters."
         audience: "Audience"
+        all_subscribers: "All confirmed subscribers"
+        target_audience: "Target Audience"
         confirmed_subscribers: "confirmed subscribers"
         sent: "Sent"
         delivered_to: "Delivered to"
@@ -350,6 +518,14 @@ en:
         background_color: "Background color"
         your_site_background: "Your site background"
         background_preview_help: "This is how your site background will look with the selected color."
+        theme_mode: "Theme Mode"
+        theme_mode_description: "Control how dark mode works on your site."
+        theme_mode_visitor_choice: "Visitor's Choice"
+        theme_mode_visitor_choice_description: "Visitors can toggle between light and dark mode. Respects their system preference by default."
+        theme_mode_light: "Always Light"
+        theme_mode_light_description: "Force light mode for all visitors. The theme toggle will be hidden."
+        theme_mode_dark: "Always Dark"
+        theme_mode_dark_description: "Force dark mode for all visitors. The theme toggle will be hidden."
         dark_theme: "Dark Theme"
         dark_theme_description: "Configure the dark mode appearance for your site. Visitors can toggle dark mode using the sun/moon icon in the header."
         dark_theme_label: "Dark theme"
@@ -368,6 +544,14 @@ en:
         preview_heading: "The quick brown fox"
         preview_subtitle: "Jumps over the lazy dog"
         preview_body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+        payment_configuration: "Payment Configuration"
+        payment_description: "Connect Stripe to accept paid memberships. Keys are encrypted at rest."
+        stripe_publishable_key: "Stripe Publishable Key"
+        stripe_secret_key: "Stripe Secret Key"
+        stripe_webhook_secret: "Stripe Webhook Secret"
+        webhook_help: "Required to verify webhook events from Stripe."
+        webhook_url: "Webhook URL:"
+        payments_currency: "Default currency"
         ai_configuration: "AI Configuration"
         ai_description: "Provide your API keys to enable AI writing features. Remove keys to disable all AI features."
         anthropic_api_key: "Anthropic API Key"
@@ -443,6 +627,28 @@ en:
         post: "Post"
         subscribers: "Subscribers"
         no_post_subscribers: "No post-attributed subscribers yet. Subscribers who sign up from a post page will be tracked here going forward."
+    traffic:
+      show:
+        title: "Traffic Analytics"
+        subtitle: "Understand where your visitors come from."
+        total_views: "Total Views"
+        unique_viewers: "Unique Viewers"
+        top_source: "Top Source"
+        views_over_time: "Views Over Time"
+        no_data: "No view data for this period."
+        traffic_sources: "Traffic Sources"
+        no_traffic_data: "No traffic data yet."
+        top_referrer_domains: "Top Referrer Domains"
+        domain: "Domain"
+        views: "Views"
+        no_referrer_data: "No referrer data yet."
+        utm_campaigns: "UTM Campaigns"
+        campaign: "Campaign"
+        no_utm_data: "No UTM data yet."
+        utm_sources: "UTM Sources"
+        source: "Source"
+        utm_mediums: "UTM Mediums"
+        medium: "Medium"
     post_dashboard:
       show:
         edit_post: "Edit Post"
@@ -507,8 +713,28 @@ en:
         generated_image: "Generated Featured Image"
         save_as_featured: "Save as Featured Image"
         regenerate: "Regenerate"
+    post_versions:
+      index:
+        save_version: "Save version"
+        diff: "Diff"
+        no_versions: "No versions yet. Versions are saved automatically as you edit."
+      show:
+        restore: "Restore"
+        restore_confirm: "Restore this version? Your current content will be replaced."
+        back: "Back"
+        title_change: "Title changed"
+        content_diff: "Content changes"
 
   # Mailers
+  comment_mailer:
+    reply_notification:
+      subject: "New reply to your comment on %{site_name}"
+      heading: "New reply on %{site_name}"
+      body: "%{name} replied to your comment on \"%{post_title}\":"
+      view_comment: "View reply"
+      unsubscribe_html: "Don't want reply notifications? <a href=\"%{url}\" style=\"color: #71717a;\">Unsubscribe</a>"
+      unsubscribe_text: "Don't want reply notifications? Unsubscribe here"
+
   subscriber_mailer:
     confirmation:
       subject: "Confirm your subscription to %{site_name}"
@@ -543,6 +769,9 @@ en:
     subscriptions:
       check_email: "Check your email for a sign-in link."
       invalid_email: "Please enter a valid email address."
+    memberships:
+      sign_in_required: "Please sign in to subscribe to a membership."
+      no_subscription: "No active subscription found."
     subscriber_sessions:
       signed_in: "You're now signed in."
       link_expired: "This link has expired or is invalid. Please request a new one."
@@ -560,6 +789,11 @@ en:
       approved: "Comment approved."
       rejected: "Comment rejected."
       deleted: "Comment deleted."
+      cannot_edit: "This comment can no longer be edited."
+      cannot_delete: "You cannot delete this comment."
+    comment_notifications:
+      unsubscribed: "You will no longer receive reply notifications for this comment."
+      invalid_link: "Invalid or expired notification link."
     admin:
       settings:
         saved: "Settings saved."
@@ -584,6 +818,19 @@ en:
         created: "Page created."
         updated: "Page updated."
         deleted: "Page deleted."
+      subscriber_labels:
+        created: "Label created."
+        updated: "Label updated."
+        deleted: "Label deleted."
+      segments:
+        created: "Segment created."
+        updated: "Segment updated."
+        deleted: "Segment deleted."
+      subscriber_labelings:
+        already_assigned: "Label is already assigned to this subscriber."
+      post_versions:
+        created: "Version saved."
+        restored: "Version restored."
       categories:
         created: "Category created."
         updated: "Category updated."
@@ -591,6 +838,16 @@ en:
       passkeys:
         registered: "Passkey registered successfully."
         removed: "Passkey removed."
+      payment_settings:
+        saved: "Payment settings saved."
+      membership_tiers:
+        created: "Tier created."
+        updated: "Tier updated."
+        deleted: "Tier deleted."
+        has_members: "Cannot delete a tier with active members."
+      memberships:
+        canceled: "Membership canceled."
+        comp_granted: "Complimentary membership granted."
       api_tokens:
         created: "API token created."
         revoked: "API token revoked."

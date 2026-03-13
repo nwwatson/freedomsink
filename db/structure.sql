@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "categories" ("id" integer PRIMARY KEY AUTOINCREMENT 
 CREATE UNIQUE INDEX "index_categories_on_slug" ON "categories" ("slug") /*application='Prose'*/;
 CREATE TABLE IF NOT EXISTS "tags" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "slug" varchar NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 CREATE UNIQUE INDEX "index_tags_on_slug" ON "tags" ("slug") /*application='Prose'*/;
-CREATE TABLE IF NOT EXISTS "posts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar NOT NULL, "subtitle" varchar, "slug" varchar NOT NULL, "status" integer DEFAULT 0 NOT NULL, "published_at" datetime(6), "scheduled_at" datetime(6), "featured" boolean DEFAULT FALSE NOT NULL, "reading_time_minutes" integer DEFAULT 0, "category_id" integer, "user_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "loves_count" integer DEFAULT 0 NOT NULL /*application='Prose'*/, "meta_description" text /*application='Prose'*/, "body_plain" text /*application='Prose'*/, "show_toc" boolean DEFAULT FALSE NOT NULL /*application='Prose'*/, CONSTRAINT "fk_rails_9b1b26f040"
+CREATE TABLE IF NOT EXISTS "posts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar NOT NULL, "subtitle" varchar, "slug" varchar NOT NULL, "status" integer DEFAULT 0 NOT NULL, "published_at" datetime(6), "scheduled_at" datetime(6), "featured" boolean DEFAULT FALSE NOT NULL, "reading_time_minutes" integer DEFAULT 0, "category_id" integer, "user_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "loves_count" integer DEFAULT 0 NOT NULL /*application='Prose'*/, "meta_description" text /*application='Prose'*/, "body_plain" text /*application='Prose'*/, "show_toc" boolean DEFAULT FALSE NOT NULL, "visibility" integer DEFAULT 0 NOT NULL /*application='Prose'*/, CONSTRAINT "fk_rails_9b1b26f040"
 FOREIGN KEY ("category_id")
   REFERENCES "categories" ("id")
 , CONSTRAINT "fk_rails_5b5ddfd518"
@@ -47,7 +47,7 @@ FOREIGN KEY ("tag_id")
 CREATE INDEX "index_post_tags_on_post_id" ON "post_tags" ("post_id") /*application='Prose'*/;
 CREATE INDEX "index_post_tags_on_tag_id" ON "post_tags" ("tag_id") /*application='Prose'*/;
 CREATE UNIQUE INDEX "index_post_tags_on_post_id_and_tag_id" ON "post_tags" ("post_id", "tag_id") /*application='Prose'*/;
-CREATE TABLE IF NOT EXISTS "post_views" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "ip_hash" varchar, "user_agent" varchar, "referrer" varchar, "source" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_f2f2d28c2c"
+CREATE TABLE IF NOT EXISTS "post_views" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "ip_hash" varchar, "user_agent" varchar, "referrer" varchar, "source" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "referrer_domain" varchar /*application='Prose'*/, "utm_source" varchar /*application='Prose'*/, "utm_medium" varchar /*application='Prose'*/, "utm_campaign" varchar /*application='Prose'*/, CONSTRAINT "fk_rails_f2f2d28c2c"
 FOREIGN KEY ("post_id")
   REFERENCES "posts" ("id")
 );
@@ -56,7 +56,7 @@ CREATE INDEX "index_post_views_on_created_at" ON "post_views" ("created_at") /*a
 CREATE INDEX "index_post_views_on_post_id_and_created_at" ON "post_views" ("post_id", "created_at") /*application='Prose'*/;
 CREATE TABLE IF NOT EXISTS "identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "handle" varchar, "settings" json DEFAULT '{}', "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "bio" text /*application='Prose'*/, "website_url" varchar /*application='Prose'*/, "twitter_handle" varchar /*application='Prose'*/, "github_handle" varchar /*application='Prose'*/);
 CREATE UNIQUE INDEX "index_identities_on_handle" ON "identities" ("handle") /*application='Prose'*/;
-CREATE TABLE IF NOT EXISTS "comments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "parent_comment_id" integer, "body" text NOT NULL, "approved" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, CONSTRAINT "fk_rails_2530bf1cd4"
+CREATE TABLE IF NOT EXISTS "comments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "parent_comment_id" integer, "body" text NOT NULL, "approved" boolean DEFAULT TRUE NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "edited_at" datetime(6) /*application='Prose'*/, "deleted_at" datetime(6) /*application='Prose'*/, "notify_on_reply" boolean DEFAULT FALSE NOT NULL /*application='Prose'*/, CONSTRAINT "fk_rails_2530bf1cd4"
 FOREIGN KEY ("identity_id")
   REFERENCES "identities" ("id")
 , CONSTRAINT "fk_rails_2fd19c0db7"
@@ -85,7 +85,7 @@ FOREIGN KEY ("identity_id")
 );
 CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email") /*application='Prose'*/;
 CREATE INDEX "index_users_on_identity_id" ON "users" ("identity_id") /*application='Prose'*/;
-CREATE TABLE IF NOT EXISTS "site_settings" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "site_name" varchar DEFAULT 'Prose' NOT NULL, "site_description" text DEFAULT '', "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "heading_font" varchar DEFAULT 'Playfair Display' /*application='Prose'*/, "subtitle_font" varchar DEFAULT 'Source Serif 4' /*application='Prose'*/, "body_font" varchar DEFAULT 'Source Serif 4' /*application='Prose'*/, "heading_font_size" decimal(4,2) DEFAULT 2.25 /*application='Prose'*/, "subtitle_font_size" decimal(4,2) DEFAULT 1.25 /*application='Prose'*/, "body_font_size" decimal(4,2) DEFAULT 1.13 /*application='Prose'*/, "claude_api_key" varchar /*application='Prose'*/, "gemini_api_key" varchar /*application='Prose'*/, "ai_model" varchar DEFAULT 'claude-sonnet-4-5-20250929' /*application='Prose'*/, "ai_max_tokens" integer DEFAULT 4096 /*application='Prose'*/, "openai_api_key" varchar /*application='Prose'*/, "image_model" varchar DEFAULT 'imagen-4.0-generate-001' /*application='Prose'*/, "background_color" varchar DEFAULT 'cream' /*application='Prose'*/, "dark_theme" varchar DEFAULT 'midnight' /*application='Prose'*/, "dark_bg_color" varchar DEFAULT '#1a1a2e' /*application='Prose'*/, "dark_text_color" varchar DEFAULT '#e0def4' /*application='Prose'*/, "dark_accent_color" varchar DEFAULT '#7ba4cc' /*application='Prose'*/, "email_provider" varchar DEFAULT 'smtp' /*application='Prose'*/, "sendgrid_api_key" varchar /*application='Prose'*/, "email_accent_color" varchar DEFAULT '#18181b' /*application='Prose'*/, "email_background_color" varchar DEFAULT '#f4f4f5' /*application='Prose'*/, "email_body_text_color" varchar DEFAULT '#3f3f46' /*application='Prose'*/, "email_heading_color" varchar DEFAULT '#18181b' /*application='Prose'*/, "email_font_family" varchar DEFAULT 'system' /*application='Prose'*/, "email_footer_text" text DEFAULT '' /*application='Prose'*/, "email_preheader_text" varchar DEFAULT '' /*application='Prose'*/, "email_social_twitter" varchar /*application='Prose'*/, "email_social_github" varchar /*application='Prose'*/, "email_social_linkedin" varchar /*application='Prose'*/, "email_social_website" varchar /*application='Prose'*/, "email_default_template" varchar DEFAULT 'minimal' /*application='Prose'*/, "block_crawlers" boolean DEFAULT FALSE NOT NULL /*application='Prose'*/, "locale" varchar DEFAULT 'en' NOT NULL /*application='Prose'*/);
+CREATE TABLE IF NOT EXISTS "site_settings" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "site_name" varchar DEFAULT 'Prose' NOT NULL, "site_description" text DEFAULT '', "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "heading_font" varchar DEFAULT 'Playfair Display' /*application='Prose'*/, "subtitle_font" varchar DEFAULT 'Source Serif 4' /*application='Prose'*/, "body_font" varchar DEFAULT 'Source Serif 4' /*application='Prose'*/, "heading_font_size" decimal(4,2) DEFAULT 2.25 /*application='Prose'*/, "subtitle_font_size" decimal(4,2) DEFAULT 1.25 /*application='Prose'*/, "body_font_size" decimal(4,2) DEFAULT 1.13 /*application='Prose'*/, "claude_api_key" varchar /*application='Prose'*/, "gemini_api_key" varchar /*application='Prose'*/, "ai_model" varchar DEFAULT 'claude-sonnet-4-5-20250929' /*application='Prose'*/, "ai_max_tokens" integer DEFAULT 4096 /*application='Prose'*/, "openai_api_key" varchar /*application='Prose'*/, "image_model" varchar DEFAULT 'imagen-4.0-generate-001' /*application='Prose'*/, "background_color" varchar DEFAULT 'cream' /*application='Prose'*/, "dark_theme" varchar DEFAULT 'midnight' /*application='Prose'*/, "dark_bg_color" varchar DEFAULT '#1a1a2e' /*application='Prose'*/, "dark_text_color" varchar DEFAULT '#e0def4' /*application='Prose'*/, "dark_accent_color" varchar DEFAULT '#7ba4cc' /*application='Prose'*/, "email_provider" varchar DEFAULT 'smtp' /*application='Prose'*/, "sendgrid_api_key" varchar /*application='Prose'*/, "email_accent_color" varchar DEFAULT '#18181b' /*application='Prose'*/, "email_background_color" varchar DEFAULT '#f4f4f5' /*application='Prose'*/, "email_body_text_color" varchar DEFAULT '#3f3f46' /*application='Prose'*/, "email_heading_color" varchar DEFAULT '#18181b' /*application='Prose'*/, "email_font_family" varchar DEFAULT 'system' /*application='Prose'*/, "email_footer_text" text DEFAULT '' /*application='Prose'*/, "email_preheader_text" varchar DEFAULT '' /*application='Prose'*/, "email_social_twitter" varchar /*application='Prose'*/, "email_social_github" varchar /*application='Prose'*/, "email_social_linkedin" varchar /*application='Prose'*/, "email_social_website" varchar /*application='Prose'*/, "email_default_template" varchar DEFAULT 'minimal' /*application='Prose'*/, "locale" varchar DEFAULT 'en' NOT NULL /*application='Prose'*/, "block_crawlers" boolean DEFAULT FALSE NOT NULL /*application='Prose'*/, "theme_mode" varchar DEFAULT 'visitor_choice' NOT NULL /*application='Prose'*/, "stripe_secret_key" varchar /*application='Prose'*/, "stripe_publishable_key" varchar /*application='Prose'*/, "stripe_webhook_secret" varchar /*application='Prose'*/, "payments_currency" varchar DEFAULT 'usd' /*application='Prose'*/);
 CREATE TABLE IF NOT EXISTS "models" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "model_id" varchar NOT NULL, "name" varchar NOT NULL, "provider" varchar NOT NULL, "family" varchar, "model_created_at" datetime(6), "context_window" integer, "max_output_tokens" integer, "knowledge_cutoff" date, "modalities" json DEFAULT '{}', "capabilities" json DEFAULT '[]', "pricing" json DEFAULT '{}', "metadata" json DEFAULT '{}', "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
 CREATE UNIQUE INDEX "index_models_on_provider_and_model_id" ON "models" ("provider", "model_id") /*application='Prose'*/;
 CREATE INDEX "index_models_on_provider" ON "models" ("provider") /*application='Prose'*/;
@@ -154,10 +154,6 @@ CREATE VIRTUAL TABLE posts_fts USING fts5(
   content_rowid='id'
 )
 /* posts_fts(title,subtitle,body_plain) */;
-CREATE TABLE IF NOT EXISTS 'posts_fts_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'posts_fts_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'posts_fts_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'posts_fts_config'(k PRIMARY KEY, v) WITHOUT ROWID;
 CREATE TRIGGER posts_fts_insert AFTER INSERT ON posts BEGIN
   INSERT INTO posts_fts(rowid, title, subtitle, body_plain)
   VALUES (NEW.id, NEW.title, NEW.subtitle, NEW.body_plain);
@@ -172,13 +168,6 @@ CREATE TRIGGER posts_fts_delete AFTER DELETE ON posts BEGIN
   INSERT INTO posts_fts(posts_fts, rowid, title, subtitle, body_plain)
   VALUES ('delete', OLD.id, OLD.title, OLD.subtitle, OLD.body_plain);
 END;
-CREATE TABLE IF NOT EXISTS "newsletters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar NOT NULL, "status" integer DEFAULT 0 NOT NULL, "sent_at" datetime(6), "scheduled_for" datetime(6), "recipients_count" integer DEFAULT 0, "user_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "template" varchar /*application='Prose'*/, "accent_color" varchar /*application='Prose'*/, "preheader_text" varchar /*application='Prose'*/, CONSTRAINT "fk_rails_e6829818c0"
-FOREIGN KEY ("user_id")
-  REFERENCES "users" ("id")
-);
-CREATE INDEX "index_newsletters_on_user_id" ON "newsletters" ("user_id") /*application='Prose'*/;
-CREATE INDEX "index_newsletters_on_status" ON "newsletters" ("status") /*application='Prose'*/;
-CREATE INDEX "index_newsletters_on_scheduled_for" ON "newsletters" ("scheduled_for") /*application='Prose'*/;
 CREATE TABLE IF NOT EXISTS "newsletter_deliveries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "newsletter_id" integer NOT NULL, "subscriber_id" integer NOT NULL, "sent_at" datetime(6), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "opened_at" datetime(6) /*application='Prose'*/, "clicked_at" datetime(6) /*application='Prose'*/, "bounced_at" datetime(6) /*application='Prose'*/, "open_count" integer DEFAULT 0 /*application='Prose'*/, CONSTRAINT "fk_rails_216f0edfce"
 FOREIGN KEY ("newsletter_id")
   REFERENCES "newsletters" ("id")
@@ -202,9 +191,72 @@ FOREIGN KEY ("user_id")
 );
 CREATE INDEX "index_passkeys_on_user_id" ON "passkeys" ("user_id") /*application='Prose'*/;
 CREATE UNIQUE INDEX "index_passkeys_on_credential_id" ON "passkeys" ("credential_id") /*application='Prose'*/;
-CREATE TABLE IF NOT EXISTS "queue_tables" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
+CREATE INDEX "index_post_views_on_referrer_domain" ON "post_views" ("referrer_domain") /*application='Prose'*/;
+CREATE INDEX "index_post_views_on_utm_source" ON "post_views" ("utm_source") /*application='Prose'*/;
+CREATE INDEX "index_post_views_on_utm_campaign" ON "post_views" ("utm_campaign") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "subscriber_labels" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "color" varchar DEFAULT '#6B7280' NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
+CREATE UNIQUE INDEX "index_subscriber_labels_on_name" ON "subscriber_labels" ("name") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "subscriber_labelings" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "subscriber_id" integer NOT NULL, "subscriber_label_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_8124998c69"
+FOREIGN KEY ("subscriber_id")
+  REFERENCES "subscribers" ("id")
+, CONSTRAINT "fk_rails_61edd4dd7d"
+FOREIGN KEY ("subscriber_label_id")
+  REFERENCES "subscriber_labels" ("id")
+);
+CREATE INDEX "index_subscriber_labelings_on_subscriber_id" ON "subscriber_labelings" ("subscriber_id") /*application='Prose'*/;
+CREATE INDEX "index_subscriber_labelings_on_subscriber_label_id" ON "subscriber_labelings" ("subscriber_label_id") /*application='Prose'*/;
+CREATE UNIQUE INDEX "idx_subscriber_labelings_uniqueness" ON "subscriber_labelings" ("subscriber_id", "subscriber_label_id") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "segments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "description" text, "filter_criteria" json DEFAULT '{}' NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
+CREATE TABLE IF NOT EXISTS "newsletters" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar NOT NULL, "status" integer DEFAULT 0 NOT NULL, "sent_at" datetime(6), "scheduled_for" datetime(6), "recipients_count" integer DEFAULT 0, "user_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "template" varchar, "accent_color" varchar, "preheader_text" varchar, "segment_id" integer, CONSTRAINT "fk_rails_e6829818c0"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+, CONSTRAINT "fk_rails_99b32dc07a"
+FOREIGN KEY ("segment_id")
+  REFERENCES "segments" ("id")
+);
+CREATE INDEX "index_newsletters_on_user_id" ON "newsletters" ("user_id") /*application='Prose'*/;
+CREATE INDEX "index_newsletters_on_status" ON "newsletters" ("status") /*application='Prose'*/;
+CREATE INDEX "index_newsletters_on_scheduled_for" ON "newsletters" ("scheduled_for") /*application='Prose'*/;
+CREATE INDEX "index_newsletters_on_segment_id" ON "newsletters" ("segment_id") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "post_versions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "post_id" integer NOT NULL, "user_id" integer NOT NULL, "version_number" integer NOT NULL, "title" varchar NOT NULL, "subtitle" varchar, "content_html" text, "body_plain" text, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_5f7c4b6bbb"
+FOREIGN KEY ("post_id")
+  REFERENCES "posts" ("id")
+, CONSTRAINT "fk_rails_77830a0f52"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+);
+CREATE INDEX "index_post_versions_on_post_id" ON "post_versions" ("post_id") /*application='Prose'*/;
+CREATE INDEX "index_post_versions_on_user_id" ON "post_versions" ("user_id") /*application='Prose'*/;
+CREATE UNIQUE INDEX "index_post_versions_on_post_id_and_version_number" ON "post_versions" ("post_id", "version_number") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "membership_tiers" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar NOT NULL, "description" text, "price_cents" integer NOT NULL, "currency" varchar DEFAULT 'usd' NOT NULL, "interval" integer DEFAULT 0 NOT NULL, "stripe_price_id" varchar, "stripe_product_id" varchar, "active" boolean DEFAULT TRUE NOT NULL, "position" integer DEFAULT 0 NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL);
+CREATE INDEX "index_membership_tiers_on_active" ON "membership_tiers" ("active") /*application='Prose'*/;
+CREATE UNIQUE INDEX "index_membership_tiers_on_stripe_price_id" ON "membership_tiers" ("stripe_price_id") /*application='Prose'*/;
+CREATE UNIQUE INDEX "index_membership_tiers_on_stripe_product_id" ON "membership_tiers" ("stripe_product_id") /*application='Prose'*/;
+CREATE TABLE IF NOT EXISTS "memberships" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "subscriber_id" integer NOT NULL, "membership_tier_id" integer NOT NULL, "stripe_subscription_id" varchar, "stripe_customer_id" varchar, "status" integer DEFAULT 0 NOT NULL, "current_period_start" datetime(6), "current_period_end" datetime(6), "canceled_at" datetime(6), "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_97849bc7c6"
+FOREIGN KEY ("subscriber_id")
+  REFERENCES "subscribers" ("id")
+, CONSTRAINT "fk_rails_8cd7a9ff0f"
+FOREIGN KEY ("membership_tier_id")
+  REFERENCES "membership_tiers" ("id")
+);
+CREATE INDEX "index_memberships_on_subscriber_id" ON "memberships" ("subscriber_id") /*application='Prose'*/;
+CREATE INDEX "index_memberships_on_membership_tier_id" ON "memberships" ("membership_tier_id") /*application='Prose'*/;
+CREATE UNIQUE INDEX "index_memberships_on_stripe_subscription_id" ON "memberships" ("stripe_subscription_id") /*application='Prose'*/;
+CREATE INDEX "index_memberships_on_stripe_customer_id" ON "memberships" ("stripe_customer_id") /*application='Prose'*/;
+CREATE INDEX "index_memberships_on_status" ON "memberships" ("status") /*application='Prose'*/;
 INSERT INTO "schema_migrations" (version) VALUES
-('20260311034706'),
+('20260313023242'),
+('20260313023241'),
+('20260313023240'),
+('20260313023225'),
+('20260312200000'),
+('20260312123354'),
+('20260311171612'),
+('20260311160003'),
+('20260311160002'),
+('20260311160001'),
+('20260311160000'),
+('20260311142140'),
 ('20260224192846'),
 ('20260224183928'),
 ('20260224183914'),

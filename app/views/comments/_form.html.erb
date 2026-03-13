@@ -1,38 +1,46 @@
 <div id="comment_form">
   <% if identity_signed_in? %>
-    <%= form_with model: Comment.new, url: post_comments_path(post, slug: post.slug), class: "space-y-3" do |f| %>
+    <%= form_with model: Comment.new, url: post_comments_path(post, slug: post.slug), class: "comment-form" do |f| %>
       <% if defined?(comment) && comment&.errors&.any? %>
-        <div class="text-sm text-red-600 dark:text-red-400"><%= comment.errors.full_messages.to_sentence %></div>
+        <div class="comment-form__errors"><%= comment.errors.full_messages.to_sentence %></div>
       <% end %>
       <div data-controller="markdown-preview">
-        <div class="mb-2 flex border-b border-gray-200 dark:border-gray-700">
+        <div class="comment-form__tabs">
           <button type="button" data-action="click->markdown-preview#showWrite" data-markdown-preview-target="writeTab"
-                  class="border-b-2 border-gray-900 text-gray-900 dark:border-gray-100 dark:text-gray-100 px-3 pb-2 text-sm font-medium">
+                  class="comment-form__tab comment-form__tab--active">
             <%= t('comments.form.write') %>
           </button>
           <button type="button" data-action="click->markdown-preview#showPreview" data-markdown-preview-target="previewTab"
-                  class="border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 px-3 pb-2 text-sm font-medium">
+                  class="comment-form__tab">
             <%= t('comments.form.preview') %>
           </button>
         </div>
         <%= f.text_area :body, rows: 3, placeholder: t('comments.form.placeholder'),
               data: { markdown_preview_target: "textarea", controller: "autogrow", action: "input->autogrow#resize" },
-              class: "prose-comment font-serif block w-full resize-none rounded-md bg-white dark:bg-white/5 px-3 py-2 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-ink-blue" %>
+              class: "form-input comment-form__textarea prose-comment font-serif" %>
         <div data-markdown-preview-target="preview"
-             class="hidden min-h-[4.5rem] overflow-hidden rounded-md bg-white dark:bg-white/5 px-3 py-2 font-serif text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 prose-comment">
+             class="comment-form__preview prose-comment">
         </div>
       </div>
-      <div class="flex items-center justify-between">
-        <p class="text-xs text-gray-400 dark:text-gray-500">
-          <strong>**bold**</strong> &nbsp; <em>*italic*</em> &nbsp; <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded">`code`</code> &nbsp; [link](url) &nbsp; > quote
-        </p>
-        <%= f.submit t('comments.form.comment'), class: "rounded-md bg-charcoal dark:bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 dark:hover:bg-gray-500 cursor-pointer" %>
+      <div class="comment-form__footer">
+        <div class="comment-form__help">
+          <p>
+            <strong>**bold**</strong> &nbsp; <em>*italic*</em> &nbsp; <code class="comment-form__help-code">`code`</code> &nbsp; [link](url) &nbsp; > quote
+          </p>
+        </div>
+        <div class="comment-form__controls">
+          <label class="comment-form__notify-label">
+            <%= f.check_box :notify_on_reply, class: "form-checkbox" %>
+            <span><%= t('comments.form.notify_on_reply') %></span>
+          </label>
+          <%= f.submit t('comments.form.comment'), class: "btn btn--primary" %>
+        </div>
       </div>
     <% end %>
   <% else %>
-    <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+    <div class="comment-form__guest-prompt">
       <p><%= t('comments.form.subscribe_to_join') %></p>
-      <div class="mx-auto mt-3 max-w-sm">
+      <div class="comment-form__guest-form-wrapper">
         <%= render "subscriptions/form", source_post_id: post.id %>
       </div>
     </div>

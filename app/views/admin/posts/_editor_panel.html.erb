@@ -1,4 +1,4 @@
-<%# locals: (post:, ai_available:, chat: nil, messages: []) %>
+<%# locals: (post:, ai_available:, chat: nil, messages: [], versions_url: nil) %>
 
 <div data-editor-drawer-target="panel"
      class="fixed top-14 right-0 bottom-0 z-50 flex w-full translate-x-full flex-col border-l border-gray-200 bg-white shadow-xl transition-transform duration-300 ease-in-out sm:w-[28rem]">
@@ -42,6 +42,15 @@
             class="flex-1 border-b-2 px-4 py-2.5 text-center text-sm font-medium border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700">
       <%= t('admin.posts.editor_panel.settings') %>
     </button>
+    <% if post.persisted? %>
+      <button type="button"
+              data-editor-drawer-target="tabButton"
+              data-tab="versions"
+              data-action="click->editor-drawer#switchTab"
+              class="flex-1 border-b-2 px-4 py-2.5 text-center text-sm font-medium border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700">
+        <%= t('admin.posts.editor_panel.versions') %>
+      </button>
+    <% end %>
   </div>
 
   <% if ai_available %>
@@ -50,19 +59,19 @@
       <%# Quick actions %>
       <div class="flex flex-wrap gap-1.5 border-b border-gray-100 px-4 py-2.5">
         <button type="button" data-action="click->editor-drawer#quickAction" data-quick-action="proofread"
-                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+                class="rounded-full bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors sm:py-1">
           <%= t('admin.posts.editor_panel.proofread') %>
         </button>
         <button type="button" data-action="click->editor-drawer#quickAction" data-quick-action="critique"
-                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+                class="rounded-full bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors sm:py-1">
           <%= t('admin.posts.editor_panel.critique') %>
         </button>
         <button type="button" data-action="click->editor-drawer#quickAction" data-quick-action="brainstorm"
-                class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+                class="rounded-full bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200 transition-colors sm:py-1">
           <%= t('admin.posts.editor_panel.brainstorm') %>
         </button>
         <button type="button" data-action="click->editor-drawer#quickAction" data-quick-action="social"
-                class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200 transition-colors">
+                class="rounded-full bg-blue-100 px-3 py-2 text-xs font-medium text-blue-700 hover:bg-blue-200 transition-colors sm:py-1">
           <%= t('admin.posts.editor_panel.social') %>
         </button>
       </div>
@@ -115,4 +124,18 @@
        class="hidden flex-1 overflow-y-auto">
     <%= render "admin/posts/settings_fields", post: post %>
   </div>
+
+  <% if post.persisted? %>
+    <%# Versions tab content %>
+    <div data-editor-drawer-target="tabContent" data-tab="versions"
+         class="hidden flex-1 flex flex-col overflow-hidden">
+      <turbo-frame id="version-detail" class="flex-1 flex flex-col overflow-y-auto"
+                   src="<%= admin_post_post_versions_path(post) %>"
+                   loading="lazy">
+        <div class="flex items-center justify-center py-12">
+          <p class="text-sm text-gray-500"><%= t("shared.loading") %></p>
+        </div>
+      </turbo-frame>
+    </div>
+  <% end %>
 </div>

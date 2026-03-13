@@ -1,0 +1,65 @@
+/* ==========================================================================
+ * Layout utility BEM blocks
+ *
+ * Usage:
+ *   .layout__body       Document body (bg, font, flex column)
+ *   .layout__main       Main content area (centered, padded)
+ *   .container          Centered content column (max-w-3xl)
+ *   .section-divider    Horizontal rule between sections
+ *   .empty-state        Empty content placeholder container
+ *   .empty-state__text  Empty state message text
+ *   .muted-text         De-emphasized text
+ *   .post-listing       Vertical stack of post cards
+ *   .page-subtitle      Muted subtitle below page headings
+ *   .section-heading    Section heading (e.g. "Posts by Author")
+ *   .load-more          Centered load-more button container
+ *   .infinite-scroll-loading  Hidden loading indicator for infinite scroll
+ * ========================================================================== */
+
+.layout__body {
+  @apply bg-cream text-charcoal font-serif min-h-screen flex flex-col;
+}
+
+.layout__main {
+  @apply mx-auto w-full max-w-3xl flex-1 px-4 py-8;
+}
+
+.container {
+  @apply mx-auto max-w-3xl px-4;
+}
+
+.section-divider {
+  @apply border-t border-gray-200 dark:border-gray-700;
+}
+
+.empty-state {
+  @apply py-16 text-center;
+}
+
+.empty-state__text {
+  @apply text-lg text-gray-500 dark:text-gray-400;
+}
+
+.muted-text {
+  @apply text-gray-500 dark:text-gray-400;
+}
+
+.post-listing {
+  @apply mt-8 space-y-8;
+}
+
+.page-subtitle {
+  @apply mt-2 text-gray-500 dark:text-gray-400;
+}
+
+.section-heading {
+  @apply font-display text-xl font-bold mb-6;
+}
+
+.load-more {
+  @apply mt-8 text-center;
+}
+
+.infinite-scroll-loading {
+  @apply hidden py-8 text-center text-gray-500 dark:text-gray-400;
+}

@@ -4,12 +4,13 @@ Rails.application.routes.draw do
 
   # Webhooks (public, no auth)
   post "webhooks/sendgrid", to: "webhooks/sendgrid#create"
+  post "webhooks/stripe", to: "webhooks/stripe#create"
 
   # Public
   root "posts#index"
   resources :posts, only: [ :index, :show ], param: :slug do
     resource :love, only: [ :create, :destroy ]
-    resources :comments, only: [ :create ]
+    resources :comments, only: [ :create, :update, :destroy ]
   end
   resources :authors, only: [ :index, :show ], param: :handle
   resources :categories, only: [ :show ], param: :slug
@@ -19,6 +20,14 @@ Rails.application.routes.draw do
   resource :handle, only: [ :update ]
   resource :handle_availability, only: [ :show ]
   resource :unsubscribe, only: [ :show, :create ]
+  resource :comment_notification, only: [ :destroy ]
+  resources :memberships, only: [ :index ] do
+    collection do
+      post :checkout
+      get :success
+      get :portal
+    end
+  end
   get "feed" => "feeds#index", defaults: { format: :xml }
   get "sitemap" => "sitemaps#index", defaults: { format: :xml }
   get "robots" => "robots#index", defaults: { format: :text }, as: :robots
@@ -45,6 +54,11 @@ Rails.application.routes.draw do
       member do
         get :preview
       end
+      resources :post_versions, only: [ :index, :show, :create ] do
+        member do
+          post :restore
+        end
+      end
       resource :dashboard, only: [ :show ], controller: "post_dashboard"
       namespace :ai do
         resource :conversation, only: [ :show, :create ]
@@ -66,12 +80,26 @@ Rails.application.routes.draw do
         get :preview
       end
     end
-    resources :subscribers, only: [ :index, :show ]
+    resources :subscriber_labels
+    resources :segments do
+      member { get :count }
+    end
+    resources :subscribers, only: [ :index, :show ] do
+      resources :subscriber_labelings, only: [ :create, :destroy ]
+    end
     resource :growth, only: [ :show ], controller: "growth"
+    resource :traffic, only: [ :show ], controller: "traffic"
     resource :profile, only: [ :edit, :update ]
     resource :settings, only: [ :edit, :update ]
     resource :newsletter_settings, only: [ :edit, :update ]
     resources :pages
+    resources :membership_tiers, except: [ :show ]
+    resources :memberships, only: [ :index, :show, :destroy ] do
+      member do
+        post :comp
+      end
+    end
+    resource :revenue, only: [ :show ], controller: "revenue"
     resources :api_tokens, only: [ :index, :create, :destroy ]
   end
 

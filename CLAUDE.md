@@ -58,6 +58,10 @@ app/models/user/authenticatable.rb    # module User::Authenticatable (concern)
 app/models/user/api_tokenable.rb     # module User::ApiTokenable (concern)
 app/models/user/passkey_authenticatable.rb # module User::PasskeyAuthenticatable (WebAuthn passkeys)
 app/models/post/discoverable.rb      # module Post::Discoverable (related posts, prev/next)
+app/models/post/versionable.rb      # module Post::Versionable (revision history, version cooldown)
+app/models/post_version.rb          # PostVersion: full snapshot of post content per version
+app/models/comment/editable.rb        # module Comment::Editable (15-min edit window, soft delete)
+app/models/comment/notifiable.rb      # module Comment::Notifiable (reply notification callbacks)
 app/models/page.rb                    # class Page (custom static pages)
 app/models/page/sluggable.rb         # module Page::Sluggable (auto-generated URL slugs)
 app/models/page/publishable.rb       # module Page::Publishable (live scope, publish/draft)
@@ -67,6 +71,16 @@ app/models/identity/handleable.rb    # module Identity::Handleable (handle valid
 app/models/identity/profileable.rb   # module Identity::Profileable (avatar, bio, social links)
 app/models/api_token.rb              # Token generation, digest lookup, revocation
 app/models/passkey.rb                # WebAuthn passkey credentials for admin sign-in
+app/models/subscriber_label.rb       # Labels for subscriber segmentation (name, color)
+app/models/subscriber_labeling.rb    # Join model: subscribers ↔ subscriber_labels
+app/models/segment.rb                # Saved subscriber filters (JSON filter_criteria)
+app/models/segment/resolvable.rb     # module Segment::Resolvable (resolves criteria to subscribers)
+app/models/membership_tier.rb       # MembershipTier: paid membership plans (name, price, interval)
+app/models/membership_tier/syncable.rb # module MembershipTier::Syncable (syncs to Stripe products/prices)
+app/models/membership.rb            # Membership: subscriber ↔ tier link with Stripe subscription state
+app/models/subscriber/billable.rb   # module Subscriber::Billable (memberships, paid_member?, stripe_customer_id)
+app/models/post/accessible.rb       # module Post::Accessible (visibility enum, content gating)
+app/models/site_setting/payment_configuration.rb # module SiteSetting::PaymentConfiguration (Stripe keys)
 ```
 
 Keep model files under 200 lines — extract behavior into concerns when they grow.
@@ -77,7 +91,7 @@ Skinny controllers that delegate to models/services. Controllers handle only HTT
 ### Service Layer
 - **Form Objects** for multi-model input (e.g., `Registration`)
 - **Service Objects** in `app/services/` for business operations (e.g., `Ai::SystemPrompts`, `Ai::PostContextBuilder`, `MarkdownRenderer`, `Mcp::Tools::*`)
-- **Query Objects** in `app/queries/` for complex queries (e.g., `PostViewsQuery`, `SubscriberGrowthQuery`, `PostEngagementQuery`)
+- **Query Objects** in `app/queries/` for complex queries (e.g., `PostViewsQuery`, `SubscriberGrowthQuery`, `PostEngagementQuery`, `ReferrerAnalyticsQuery`, `SegmentSubscribersQuery`)
 
 ### Internationalization (i18n)
 Site-wide locale configured via `SiteSetting.locale` (default: `"en"`). The `SiteSetting::Localization` concern defines `SUPPORTED_LOCALES` and validates the locale value. `ApplicationController` sets `I18n.locale` from the site setting on every request. All UI strings live in `config/locales/en.yml` and `config/locales/es.yml`. To add a new locale: add the language code to `SUPPORTED_LOCALES` in `app/models/site_setting/localization.rb`, add it to `config.i18n.available_locales` in `config/application.rb`, and create the corresponding YAML file in `config/locales/`.
@@ -92,13 +106,33 @@ Uses the **RubyLLM** gem for a unified LLM interface across providers (Claude fo
 Pages (`Page` model) provide custom static content at top-level URLs (`/:slug`). The catch-all route **must remain last** in `config/routes.rb` (after admin namespace and health check) to avoid intercepting other routes. Pages use `admin_page_editor` layout (simplified editor without AI/preview). Reserved slugs (admin, posts, feed, etc.) are validated at the model level. Published pages with `show_in_navigation: true` appear in the site header automatically via `Page.navigation` scope.
 
 ### Post Editor
-Uses the `admin_editor` layout. Autosave triggers on a 3-second debounce, serializing `#post_form` FormData. The editor drawer is a tabbed panel (AI + Settings). Settings fields use `form="post_form"` attribute with event listeners on the settings tab container to trigger autosave.
+Uses the `admin_editor` layout. Autosave triggers on a 3-second debounce, serializing `#post_form` FormData. The editor drawer is a tabbed panel (AI + Settings + Versions). Settings fields use `form="post_form"` attribute with event listeners on the settings tab container to trigger autosave.
+
+### Post Versioning
+`PostVersion` stores full snapshots (title, subtitle, content HTML, body plain text) on each save. Auto-versioning triggers on update with a 5-minute cooldown (`Post::Versionable`). Manual "Save version" button in the editor drawer's Versions tab. Diff view uses the `diffy` gem for plain-text comparison. "Restore" replaces the post's current content. Max 50 versions per post, pruned inline on version creation. Admin CRUD at `/admin/posts/:id/post_versions`.
+
+### BEM CSS Components
+Frontend component styles use BEM (Block Element Modifier) methodology in `app/assets/tailwind/components/`. Each component gets its own file (e.g., `_post-card.css`) imported via the `_index.css` manifest. Theme variables (fonts, colors) are defined in the `@theme` block of `application.css` — Tailwind v4's `@theme` directive cannot be extracted to a separate file. `SiteHelper` methods inject runtime overrides for admin-configurable fonts and colors.
 
 ### Key Stimulus Controllers
-`autosave`, `editor_drawer`, `tag_select`, `custom_select`, `streaming_markdown`, `ai_image_modal`, `typography_preview`, `markdown_preview`
+`autosave`, `editor_drawer`, `tag_select`, `custom_select`, `streaming_markdown`, `ai_image_modal`, `typography_preview`, `markdown_preview`, `traffic_chart`, `segment_builder`, `comment_edit`
 
 ### Author Profiles
 Profile data (bio, avatar, social links) lives on the `Identity` model via `Identity::Profileable` concern. Public author pages at `/authors` (index) and `/authors/:handle` (show) are served by `AuthorsController`. Admin profile editing at `/admin/profile` via `Admin::ProfilesController`. Author names on posts link to their profile pages. Bios support markdown via `MarkdownRenderer`.
+
+### Traffic Analytics
+`Admin::TrafficController` provides a dedicated deep-dive traffic page at `/admin/traffic` with referrer domain breakdown, UTM campaign/source/medium tables, and a configurable range selector (7d/30d/90d/all). `PostView` stores `referrer_domain`, `utm_source`, `utm_medium`, and `utm_campaign` extracted at write time by `TrackPostViewJob`. `ReferrerAnalyticsQuery` provides aggregation methods. Use `rake referrer:backfill` to populate columns from existing referrer URLs.
+
+### Subscriber Segmentation
+`SubscriberLabel` provides tagging for subscribers (name + hex color). `SubscriberLabeling` is the many-to-many join. `Segment` stores saved filter criteria as JSON (`filter_criteria` column) with a `Segment::Resolvable` concern that delegates to `SegmentSubscribersQuery`. Filters support: label matching (any_of/all_of/none_of), date ranges on `confirmed_at`, and engagement level (active/inactive derived from `newsletter_deliveries`). Newsletters have an optional `segment_id` — `Newsletter::Sendable#target_subscribers` returns the segment's resolved subscribers or all confirmed subscribers. Admin CRUD at `/admin/subscriber_labels`, `/admin/segments`. Labels are managed per-subscriber at `/admin/subscribers/:id`.
+
+### Paid Memberships (Stripe)
+Prose supports Ghost-style paid memberships with Stripe integration. Feature is gated — UI only appears when Stripe keys are configured in `SiteSetting`. Direct Stripe API keys (not Stripe Connect), stored encrypted like AI keys. 3-level post visibility: `public` (default), `members_only` (free sign-in), `paid_only` (subscription required). `PaymentService` module follows the same provider pattern as `EmailService`. `PaymentService::Stripe` handles checkout sessions, billing portal, subscriptions, and webhook event construction. `StripeWebhookJob` processes checkout completions, subscription updates/deletions, and payment failures (idempotent). `SyncStripeSubscriptionJob` runs daily to keep membership status in sync. Admin controllers at `/admin/payment_settings`, `/admin/membership_tiers`, `/admin/memberships`, `/admin/revenue`. Public pricing page at `/memberships`. Content gating in `posts/show` — `PostsController` sets `@can_view` via `MembershipAccess` concern. Query objects: `RevenueQuery` (MRR, ARR, churn) and `MembershipGrowthQuery` (new/canceled/net by month).
+
+### Comment Features
+Comments belong to `Identity` (not `Subscriber`), allowing both admins and subscribers to comment. One-level threading only. Features:
+- **Edit/Delete**: Authors can edit within 15 minutes (`Comment::Editable`). Soft delete sets `deleted_at` and replaces body with "[deleted]". Admin hard-delete unchanged.
+- **Reply Notifications**: Opt-in via `notify_on_reply` checkbox. `Comment::Notifiable` fires `CommentReplyNotificationJob` on reply creation. `CommentMailer#reply_notification` sends email with token-based unsubscribe (`CommentNotificationsController`).
 
 ### Social Embeds
 `XPost` and `YouTubeVideo` models with oEmbed fetching, embedded in rich text via ActionText.
