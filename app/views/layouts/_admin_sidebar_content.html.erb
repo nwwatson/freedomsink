@@ -52,7 +52,6 @@
           <%= admin_nav_link t('layouts.admin.membership_tiers'), admin_membership_tiers_path, icon: "collection" %>
           <%= admin_nav_link t('layouts.admin.members'), admin_memberships_path, icon: "user-group" %>
           <%= admin_nav_link t('layouts.admin.revenue'), admin_revenue_path, icon: "currency-dollar" %>
-          <%= admin_nav_link t('layouts.admin.payment_settings'), edit_admin_payment_settings_path, icon: "credit-card" %>
         </div>
       </div>
     <% end %>
@@ -62,6 +61,7 @@
       <div class="mt-2 space-y-1">
         <%= admin_nav_link t('layouts.admin.profile'), edit_admin_profile_path, icon: "user-circle" %>
         <%= admin_nav_link t('layouts.admin.settings'), edit_admin_settings_path, icon: "cog" %>
+        <%= admin_nav_link t('layouts.admin.payment_settings'), edit_admin_payment_settings_path, icon: "credit-card" %>
         <%= admin_nav_link t('layouts.admin.passkeys'), admin_passkeys_path, icon: "finger-print" %>
         <%= admin_nav_link t('layouts.admin.api_tokens'), admin_api_tokens_path, icon: "key" %>
       </div>
