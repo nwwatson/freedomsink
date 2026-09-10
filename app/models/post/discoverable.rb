@@ -25,6 +25,7 @@ module Post::Discoverable
         .where.not(id: id)
         .joins(:tags)
         .where(tags: { id: tag_ids })
+        .with_attached_featured_image
         .group("posts.id")
         .order(Arel.sql("COUNT(tags.id) DESC"), published_at: :desc)
         .limit(limit)
@@ -40,6 +41,7 @@ module Post::Discoverable
     category_posts = Post.live
                          .where(category_id: category_id)
                          .where.not(id: exclude_ids)
+                         .with_attached_featured_image
                          .order(published_at: :desc)
                          .limit(remaining)
                          .to_a
@@ -53,6 +55,7 @@ module Post::Discoverable
 
     recent_posts = Post.live
                        .where.not(id: exclude_ids)
+                       .with_attached_featured_image
                        .order(published_at: :desc)
                        .limit(remaining)
                        .to_a

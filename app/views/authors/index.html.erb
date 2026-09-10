@@ -18,7 +18,7 @@
     <div class="author-card">
       <div class="author-card__inner">
         <% if identity.avatar.attached? %>
-          <%= image_tag identity.avatar.variant(resize_to_fill: [96, 96]),
+          <%= optimized_avatar_tag identity, size: 96,
                 class: "author-card__avatar",
                 alt: identity.name %>
         <% else %>

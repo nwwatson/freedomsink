@@ -14,7 +14,7 @@
 <div class="author-profile">
   <div class="author-profile__inner">
     <% if @identity.avatar.attached? %>
-      <%= image_tag @identity.avatar.variant(resize_to_fill: [128, 128]),
+      <%= optimized_avatar_tag @identity, size: 128,
             class: "author-profile__avatar",
             alt: @identity.name %>
     <% else %>
