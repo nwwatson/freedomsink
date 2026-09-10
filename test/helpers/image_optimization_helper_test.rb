@@ -79,7 +79,32 @@ class ImageOptimizationHelperTest < ActionView::TestCase
     assert_match(/sizes="\(max-width: 800px\) 100vw, 800px"/, html)
   end
 
+  test "avatar tag returns nil when no avatar attached" do
+    identity = identities(:writer_identity)
+
+    assert_nil optimized_avatar_tag(identity, size: 96)
+  end
+
+  test "avatar tag generates a filled square variant" do
+    identity = identities(:writer_identity)
+    attach_test_avatar(identity)
+
+    html = optimized_avatar_tag(identity, size: 96, class: "author-card__avatar", alt: identity.name)
+    assert_match(/class="author-card__avatar"/, html)
+    assert_match(/alt="#{identity.name}"/, html)
+    assert_match(/loading="lazy"/, html)
+    assert_match(/decoding="async"/, html)
+  end
+
   private
+
+  def attach_test_avatar(identity)
+    identity.avatar.attach(
+      io: file_fixture_image_io,
+      filename: "avatar.jpg",
+      content_type: "image/jpeg"
+    )
+  end
 
   def attach_test_image(post)
     post.featured_image.attach(
