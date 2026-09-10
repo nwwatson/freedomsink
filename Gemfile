@@ -2,6 +2,9 @@ source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.2"
+# json 3.x drops JSON.parse's legacy positional options arg, which breaks
+# ActiveSupport::JSON.decode (used by signed/encrypted cookies) on this Rails version.
+gem "json", "< 3.0"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
@@ -49,7 +52,7 @@ gem "image_processing", "~> 1.2"
 gem "aws-sdk-s3", require: false
 
 # Modern rich text editor built on Lexical [https://github.com/basecamp/lexxy]
-gem "lexxy", "~> 0.8.0.beta"
+gem "lexxy", "~> 0.9.0.beta"
 
 # Unified LLM interface for Claude, Gemini, and more [https://github.com/crmne/ruby_llm]
 gem "ruby_llm"

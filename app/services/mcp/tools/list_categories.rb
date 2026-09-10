@@ -1,6 +1,6 @@
 module Mcp
   module Tools
-    class ListCategories < MCP::Tool
+    class ListCategories < Base
       description "List all categories with their post counts."
 
       input_schema(properties: {})
@@ -9,11 +9,12 @@ module Mcp
 
       class << self
         def call(server_context:, **_params)
+          post_counts = Category.post_counts
           categories = Category.ordered.map do |c|
-            { id: c.id, name: c.name, slug: c.slug, description: c.description, position: c.position, post_count: c.posts.count }
+            { id: c.id, name: c.name, slug: c.slug, description: c.description, position: c.position, post_count: post_counts.fetch(c.id, 0) }
           end
 
-          MCP::Tool::Response.new([ { type: "text", text: { categories: categories }.to_json } ])
+          success({ categories: categories })
         end
       end
     end

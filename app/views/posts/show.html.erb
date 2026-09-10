@@ -76,10 +76,10 @@
       <h3 class="post-detail__comments-heading"><%= t('posts.show.comments') %></h3>
 
       <div id="comments" class="post-detail__comments-list">
-        <% @post.comments.approved.top_level.includes(:identity, replies: :identity).each do |comment| %>
-          <%= render "comments/comment", comment: comment %>
-          <% comment.replies.approved.each do |reply| %>
-            <%= render "comments/comment", comment: reply %>
+        <% @comments.each do |comment| %>
+          <%= render "comments/comment", comment: comment, post: @post %>
+          <% comment.approved_replies.each do |reply| %>
+            <%= render "comments/comment", comment: reply, post: @post %>
           <% end %>
         <% end %>
       </div>
@@ -91,7 +91,7 @@
   <% else %>
     <%# Teaser content for gated posts %>
     <div class="post-detail__content prose prose-lg dark:prose-invert">
-      <p><%= @post.content&.to_plain_text&.truncate(300) %></p>
+      <p><%= @post.excerpt %></p>
     </div>
     <%= render "posts/paywall", post: @post %>
   <% end %>

@@ -44,6 +44,12 @@ bin/rails db:seed      # Load seed data
 bin/rails db:reset     # Drop and recreate from schema
 ```
 
+The app uses `config.active_record.schema_format = :sql`, so **`db/structure.sql` is the
+authoritative schema** — SQL format is required to preserve the FTS5 virtual tables and
+triggers that Rails' Ruby schema dumper cannot express. There is no `db/schema.rb`; it is
+gitignored, and `db/*_schema.rb` (the generated Solid Queue/Cache/Cable dumps) plus
+`db/schema.rb` are excluded from RuboCop in `.rubocop.yml`.
+
 ## Architecture
 
 Refer to `docs/design_guide.md` for comprehensive architectural patterns. Key principles:
@@ -60,12 +66,13 @@ app/models/user/passkey_authenticatable.rb # module User::PasskeyAuthenticatable
 app/models/post/discoverable.rb      # module Post::Discoverable (related posts, prev/next)
 app/models/post/versionable.rb      # module Post::Versionable (revision history, version cooldown)
 app/models/post_version.rb          # PostVersion: full snapshot of post content per version
+app/models/concerns/sluggable.rb     # module Sluggable (slugged_from macro: slug generation/uniquifying, used by Post, Page, Category, Tag)
 app/models/comment/editable.rb        # module Comment::Editable (15-min edit window, soft delete)
 app/models/comment/notifiable.rb      # module Comment::Notifiable (reply notification callbacks)
 app/models/page.rb                    # class Page (custom static pages)
-app/models/page/sluggable.rb         # module Page::Sluggable (auto-generated URL slugs)
-app/models/page/publishable.rb       # module Page::Publishable (live scope, publish/draft)
 app/models/page/navigable.rb         # module Page::Navigable (navigation menu scope)
+app/models/concerns/publishable.rb   # module Publishable — shared `publishes_at` macro (live scope, publish!/schedule!/revert_to_draft!), included by Post, Page, Newsletter
+app/validators/future_validator.rb   # FutureValidator: shared "must be in the future" validation used by Publishable
 app/models/site_setting/localization.rb  # module SiteSetting::Localization (i18n)
 app/models/identity/handleable.rb    # module Identity::Handleable (handle validation/normalization)
 app/models/identity/profileable.rb   # module Identity::Profileable (avatar, bio, social links)
@@ -99,14 +106,20 @@ Site-wide locale configured via `SiteSetting.locale` (default: `"en"`). The `Sit
 ### Background Jobs
 Solid Queue (database-backed). Jobs organized by domain in `app/jobs/`. Recurring tasks configured in `config/recurring.yml`.
 
+### SiteSetting Caching
+`SiteSetting.current` is memoized on `Current.site_setting` (`app/models/current.rb`) for the lifetime of a request or job — `first_or_create!` only runs once per request instead of on every call. An `after_commit` callback on `SiteSetting` clears the memoized value so an update within the same request is not stale. `SiteHelper` exposes a `site_setting` helper method that views should call instead of `SiteSetting.current` directly. `Newsletter::Templatable#resolved_*` methods accept an optional `site` argument so `email_settings` can pass down a single fetched record rather than re-querying per field.
+
 ### AI Integration
-Uses the **RubyLLM** gem for a unified LLM interface across providers (Claude for text, Gemini/OpenAI for images). API keys are stored with Active Record Encryption on `SiteSetting` — key presence enables a feature, `nil` disables it (no separate toggle). The `Ai::Configurable` concern handles provider configuration. AI controllers are nested under `admin/posts/:id/ai/` and streaming responses use Turbo Streams + Solid Cable (`AiResponseJob` broadcasts chunks).
+Uses the **RubyLLM** gem for a unified LLM interface across providers (Claude for text, Gemini/OpenAI for images). API keys are stored with Active Record Encryption on `SiteSetting` — key presence enables a feature, `nil` disables it (no separate toggle). The `Ai::Configurable` concern handles provider configuration. `configure_ruby_llm!` runs as a `before_action` only on `Admin::Ai::BaseController` (and subclasses) — not on `Admin::BaseController` — so non-AI admin pages don't decrypt AI API keys on every request. AI controllers are nested under `admin/posts/:id/ai/` and streaming responses use Turbo Streams + Solid Cable (`AiResponseJob` broadcasts chunks).
 
 ### Custom Static Pages
 Pages (`Page` model) provide custom static content at top-level URLs (`/:slug`). The catch-all route **must remain last** in `config/routes.rb` (after admin namespace and health check) to avoid intercepting other routes. Pages use `admin_page_editor` layout (simplified editor without AI/preview). Reserved slugs (admin, posts, feed, etc.) are validated at the model level. Published pages with `show_in_navigation: true` appear in the site header automatically via `Page.navigation` scope.
 
 ### Post Editor
 Uses the `admin_editor` layout. Autosave triggers on a 3-second debounce, serializing `#post_form` FormData. The editor drawer is a tabbed panel (AI + Settings + Versions). Settings fields use `form="post_form"` attribute with event listeners on the settings tab container to trigger autosave.
+
+### Post Content & Search Indexing
+`Post#body_plain` is the canonical plain-text source for a post's content — `Post#excerpt(length)` truncates it and is used by `seo_description`, the featured-post teaser, and the gated-content teaser. Never re-derive plain text from `content.to_plain_text` outside of `Post::Searchable#update_body_plain`; that callback only recomputes `body_plain` when `content` actually changed (`before_save :update_body_plain, if: -> { new_record? || content.changed? }`), so a settings-only save (autosave, love counter, status toggle) skips the Nokogiri parse. `calculate_reading_time` is similarly guarded with `will_save_change_to_body_plain?`. The `posts_fts_update` SQLite trigger has a `WHEN` clause so the FTS5 row is only deleted/reinserted when `title`, `subtitle`, or `body_plain` actually changed. Run `rake posts:backfill_body_plain` to populate `body_plain` for posts created before the column existed.
 
 ### Post Versioning
 `PostVersion` stores full snapshots (title, subtitle, content HTML, body plain text) on each save. Auto-versioning triggers on update with a 5-minute cooldown (`Post::Versionable`). Manual "Save version" button in the editor drawer's Versions tab. Diff view uses the `diffy` gem for plain-text comparison. "Restore" replaces the post's current content. Max 50 versions per post, pruned inline on version creation. Admin CRUD at `/admin/posts/:id/post_versions`.
@@ -116,6 +129,9 @@ Frontend component styles use BEM (Block Element Modifier) methodology in `app/a
 
 ### Key Stimulus Controllers
 `autosave`, `editor_drawer`, `tag_select`, `custom_select`, `streaming_markdown`, `ai_image_modal`, `typography_preview`, `markdown_preview`, `traffic_chart`, `segment_builder`, `comment_edit`
+
+### Shared JS Modules
+`app/javascript/lib/` holds framework-agnostic helpers shared across Stimulus controllers (pinned via `pin_all_from "app/javascript/lib", under: "lib"` in `config/importmap.rb`, imported as `lib/<name>`). `lib/request.js` centralizes the CSRF-token meta lookup and the three fetch idioms used throughout the app: `request(url, opts)` (sets `X-CSRF-Token`, JSON-encodes a plain object body, form-encodes a `URLSearchParams` body, passes `FormData` through untouched), `requestJSON(url, opts)` (parses the JSON response and throws with `data.error` when the response isn't ok), and `requestTurboStream(url, opts)` (sets the Turbo Stream `Accept` header and renders the response via `Turbo.renderStreamMessage`). Controllers that POST or fetch should use these helpers instead of duplicating the CSRF meta-tag lookup.
 
 ### Author Profiles
 Profile data (bio, avatar, social links) lives on the `Identity` model via `Identity::Profileable` concern. Public author pages at `/authors` (index) and `/authors/:handle` (show) are served by `AuthorsController`. Admin profile editing at `/admin/profile` via `Admin::ProfilesController`. Author names on posts link to their profile pages. Bios support markdown via `MarkdownRenderer`.
@@ -144,7 +160,7 @@ Prose exposes an MCP endpoint at `POST /mcp` for AI assistants to manage blog co
 
 **Controller**: `Mcp::SessionsController` (inherits `ActionController::API`) — a single endpoint that authenticates the token, sets `Current.user`, and delegates to the `MCP::Server` gem for JSON-RPC dispatch. Rate limited at 60 req/min per IP.
 
-**Tool architecture**: 14 tools in `app/services/mcp/tools/`, all inheriting from `MCP::Tool`. Each declares a `description`, `input_schema`, and `call(server_context:, **params)` class method. Tools are registered via `Mcp::ToolRegistry.all`.
+**Tool architecture**: 14 tools in `app/services/mcp/tools/`, all inheriting from `Mcp::Tools::Base` (itself an `MCP::Tool` subclass). Each declares a `description`, `input_schema`, and `call(server_context:, **params)` class method. Tools are registered via `Mcp::ToolRegistry.all`, which excludes `Base`. `Base` provides private class-level helpers shared across tools: `find_post`/`with_post` (slug-or-numeric-ID lookup with a `"Post not found: ..."` error envelope on `ActiveRecord::RecordNotFound`), `find_category`, `find_or_create_tags`, `decode_upload` (base64 → `[StringIO, content_type]`), and `success`/`failure` response envelope builders. `MCP::Tool.inherited` resets description/schema per subclass and `tool_name` derives from the leaf class name, so the intermediate `Base` class doesn't affect tool names or schemas.
 
 ```
 app/services/mcp/
@@ -152,6 +168,7 @@ app/services/mcp/
 ├── post_serializer.rb        # Consistent post JSON serialization
 ├── markdown_converter.rb     # Markdown → HTML (Commonmarker, GFM)
 └── tools/
+    ├── base.rb                # Mcp::Tools::Base — shared post/category/tag/upload helpers, response envelopes
     ├── list_posts.rb          # Filter by status/category/tag/search, paginated
     ├── get_post.rb            # Full post by slug or ID
     ├── create_post.rb         # New draft from markdown
@@ -171,7 +188,7 @@ app/services/mcp/
 **Admin UI**: `Admin::ApiTokensController` with token CRUD at `/admin/api_tokens`. Admins see all tokens; writers see only their own. Raw token shown once via flash on creation.
 
 ### Authentication
-- **Admin**: session-based (signed cookie, 14-day expiry)
+- **Admin**: session-based (signed cookie, 14-day expiry). The `Authentication` concern owns cookie → `Session` resumption (`resume_session`, memoized via a `Current.session` short-circuit) and is included once on `ApplicationController`, so both admin (`current_user`) and identity (`IdentityAuthentication#current_identity`) lookups share a single `sessions` query per request.
 - **Admin Passkeys**: optional WebAuthn/passkey sign-in alongside password. Configured via `WEBAUTHN_ORIGIN` and `WEBAUTHN_RP_ID` env vars. Managed at `/admin/passkeys`.
 - **Subscribers**: passwordless magic-link (15-minute token expiry)
 - **MCP/API**: Bearer token (`prose_`-prefixed, SHA256 digest stored)

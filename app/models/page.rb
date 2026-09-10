@@ -4,12 +4,15 @@ class Page < ApplicationRecord
   include Navigable
 
   enum :status, { draft: 0, published: 1 }
+  publishes_at :published_at
 
   belongs_to :user
   has_rich_text :content
 
   validates :title, presence: true
   validates :meta_description, length: { maximum: 160 }, allow_blank: true
+
+  slugged_from :title, message: "must be URL-safe (lowercase letters, numbers, hyphens)"
 
   RESERVED_SLUGS = %w[
     admin posts authors categories tags subscriptions feed sitemap robots up mcp

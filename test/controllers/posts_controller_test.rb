@@ -7,6 +7,19 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: posts(:featured_post).title
   end
 
+  test "GET index performs at most one site_settings query" do
+    query_count = 0
+    subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, _start, _finish, _id, payload|
+      query_count += 1 if payload[:name] == "SiteSetting Load"
+    end
+
+    get root_path
+
+    assert_equal 1, query_count
+  ensure
+    ActiveSupport::Notifications.unsubscribe(subscriber)
+  end
+
   test "GET index shows non-featured posts" do
     get root_path
     assert_response :success
@@ -64,5 +77,38 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select "style", /root\.dark/
+  end
+
+  test "GET index preloads author identities without an N+1 query" do
+    # One preload query for the featured post collection, one for the rest of the
+    # listing — constant regardless of how many posts or distinct authors are shown.
+    assert_query_count(2, table: "identities") { get root_path }
+  end
+
+  test "GET show comment query count does not grow with comment or reply count" do
+    post = posts(:published_post)
+    identity = identities(:subscriber_identity)
+    replier = identities(:from_published_post_identity)
+
+    3.times do |i|
+      top_level = Comment.create!(post: post, identity: identity, body: "Top level #{i}", approved: true)
+      2.times do |j|
+        Comment.create!(post: post, identity: replier, parent_comment_id: top_level.id, body: "Reply #{j}", approved: true)
+      end
+      Comment.create!(post: post, identity: replier, parent_comment_id: top_level.id, body: "Unapproved reply", approved: false)
+    end
+
+    comment_queries = 0
+    callback = lambda do |*, payload|
+      comment_queries += 1 if payload[:sql].match?(/FROM "comments"/)
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      get post_path(post, slug: post.slug)
+    end
+
+    assert_response :success
+    assert_equal 2, comment_queries
+    assert_select ".comment__body", text: /Unapproved reply/, count: 0
   end
 end

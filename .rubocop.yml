@@ -1,6 +1,23 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+# Generated schema dumps — Rails owns their formatting, not us.
+# `db/structure.sql` is authoritative (schema_format = :sql); `db/*_schema.rb`
+# are the generated Solid Queue/Cache/Cable dumps.
+#
+# These are listed twice on purpose. AllCops/Exclude is the correct home, but
+# RuboCop resolves AllCops/Exclude from the outermost .rubocop.yml it finds
+# walking up the tree, so it is ignored when the checkout is nested inside
+# another repo (e.g. a git worktree under .claude/worktrees/). The cop-level
+# Exclude is not subject to that rule and applies in both cases.
+AllCops:
+  Exclude: &generated_schemas
+    - "db/schema.rb"
+    - "db/*_schema.rb"
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Exclude: *generated_schemas
+
 # Overwrite or add rules to create your own house style
 #
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
