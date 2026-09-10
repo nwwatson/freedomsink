@@ -1,4 +1,22 @@
 es:
+  errors:
+    messages:
+      hex_color: "debe ser un color hexadecimal válido (p. ej. #1a1a2e)"
+  date:
+    formats:
+      short: "%-d %b %Y"
+      long: "%-d de %B de %Y"
+    day_names: [domingo, lunes, martes, miércoles, jueves, viernes, sábado]
+    abbr_day_names: [dom, lun, mar, mié, jue, vie, sáb]
+    month_names: [~, enero, febrero, marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre]
+    abbr_month_names: [~, ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic]
+  time:
+    formats:
+      short: "%-d %b, %H:%M"
+      long: "%-d de %B de %Y a las %-I:%M %p"
+      with_time: "%-d %b %Y a las %-I:%M %p"
+    am: "a. m."
+    pm: "p. m."
   shared:
     home: "Inicio"
     about: "Acerca de"
@@ -38,26 +56,21 @@ es:
     application:
       toggle_dark_mode: "Alternar modo oscuro"
       copyright_html: "&copy; %{year} %{site_name}. Todos los derechos reservados."
-    mailer:
-      unsubscribe: "Cancelar suscripción"
+    editor:
+      keep_editing: "Seguir editando"
+      discard: "Descartar"
     admin_editor:
       posts: "Publicaciones"
       discard_post: "¿Descartar publicación?"
       discard_post_message: "Esta publicación aún no se ha guardado. ¿Estás seguro de que quieres descartarla?"
-      keep_editing: "Seguir editando"
-      discard: "Descartar"
     admin_page_editor:
       pages: "Páginas"
       discard_page: "¿Descartar página?"
       discard_page_message: "Esta página aún no se ha guardado. ¿Estás seguro de que quieres descartarla?"
-      keep_editing: "Seguir editando"
-      discard: "Descartar"
     newsletter_editor:
       newsletters: "Boletines"
       discard_newsletter: "¿Descartar boletín?"
       discard_newsletter_message: "Este boletín aún no se ha guardado. ¿Estás seguro de que quieres descartarlo?"
-      keep_editing: "Seguir editando"
-      discard: "Descartar"
     admin:
       content: "Contenido"
       all_posts: "Todas las publicaciones"
@@ -304,6 +317,8 @@ es:
         subscribed: "Suscrito"
         labels: "Etiquetas"
         add_label: "Agregar etiqueta"
+        grant_membership: "Otorgar membresía de cortesía"
+        grant_membership_button: "Otorgar"
     subscriber_labels:
       index:
         title: "Etiquetas de suscriptores"
@@ -381,6 +396,7 @@ es:
         status: "Estado"
         members: "Miembros"
         inactive: "Inactivo"
+        syncing: "Sincronizando…"
         no_tiers: "No hay niveles de membresía"
         get_started: "Crea tu primer nivel para comenzar a aceptar membresías de pago."
       new:
@@ -722,6 +738,10 @@ es:
         title_change: "Título cambiado"
         content_diff: "Cambios en el contenido"
 
+  mailer:
+    footer:
+      unsubscribe: "Cancelar suscripción"
+
   comment_mailer:
     reply_notification:
       subject: "Nueva respuesta a tu comentario en %{site_name}"
@@ -748,8 +768,6 @@ es:
       read_full_post: "Leer la publicación completa"
       subject: "Nueva publicación: %{title}"
   newsletter_mailer:
-    footer:
-      unsubscribe: "Cancelar suscripción"
     social_links:
       twitter: "Twitter/X"
       github: "GitHub"
@@ -763,6 +781,8 @@ es:
     memberships:
       sign_in_required: "Por favor inicia sesión para suscribirte a una membresía."
       no_subscription: "No se encontró suscripción activa."
+    payments:
+      not_configured: "Los pagos aún no están configurados."
     subscriptions:
       check_email: "Revisa tu correo electrónico para obtener un enlace de inicio de sesión."
       invalid_email: "Por favor ingresa una dirección de correo electrónico válida."

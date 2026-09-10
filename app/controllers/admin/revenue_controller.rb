@@ -1,8 +1,15 @@
 module Admin
   class RevenueController < BaseController
+    include Admin::AnalyticsRangeable
+
+    before_action :require_payments_configured
+
+    ALLOWED_RANGES = %w[7d 30d 90d all].freeze
+
     def show
-      since = range_to_date(params[:range])
-      @range = params[:range] || "30d"
+      range = analytics_range(default: "30d", allowed: ALLOWED_RANGES)
+      @range = range.key
+      since = range.since
 
       revenue_query = RevenueQuery.new
       growth_query = MembershipGrowthQuery.new
@@ -21,13 +28,8 @@ module Admin
 
     private
 
-    def range_to_date(range)
-      case range
-      when "7d" then 7.days.ago
-      when "90d" then 90.days.ago
-      when "all" then Time.at(0)
-      else 30.days.ago
-      end
+    def require_payments_configured
+      super(redirect_to: admin_root_path, alert: t("flash.payments.not_configured"))
     end
   end
 end

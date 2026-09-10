@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     end
     resources :subscribers, only: [ :index, :show ] do
       resources :subscriber_labelings, only: [ :create, :destroy ]
+      post "memberships/comp", to: "memberships#comp", as: :comp_membership
     end
     resource :growth, only: [ :show ], controller: "growth"
     resource :traffic, only: [ :show ], controller: "traffic"
@@ -94,11 +95,7 @@ Rails.application.routes.draw do
     resource :newsletter_settings, only: [ :edit, :update ]
     resources :pages
     resources :membership_tiers, except: [ :show ]
-    resources :memberships, only: [ :index, :show, :destroy ] do
-      member do
-        post :comp
-      end
-    end
+    resources :memberships, only: [ :index, :show, :destroy ]
     resource :revenue, only: [ :show ], controller: "revenue"
     resources :api_tokens, only: [ :index, :create, :destroy ]
   end

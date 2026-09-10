@@ -22,12 +22,7 @@ class MembershipTier < ApplicationRecord
   end
 
   def formatted_price
-    symbol = case currency
-    when "eur" then "\u20AC"
-    when "gbp" then "\u00A3"
-    else "$"
-    end
-    "#{symbol}#{format("%.2f", price_in_dollars)}"
+    Currency.format(price_cents, currency)
   end
 
   def interval_label

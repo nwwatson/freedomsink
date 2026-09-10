@@ -40,4 +40,28 @@ class Admin::MembershipsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_memberships_path
     assert membership.reload.canceled?
   end
+
+  test "POST comp grants a complimentary membership to the subscriber" do
+    sign_in_as(:admin)
+    subscriber = subscribers(:unconfirmed)
+    tier = membership_tiers(:monthly)
+
+    assert_difference "Membership.count", 1 do
+      post admin_subscriber_comp_membership_path(subscriber), params: { tier_id: tier.id }
+    end
+
+    membership = subscriber.memberships.order(:created_at).last
+    assert membership.active?
+    assert membership.complimentary?
+    assert_equal tier, membership.membership_tier
+    assert_redirected_to admin_memberships_path
+  end
+
+  test "POST comp requires authentication" do
+    subscriber = subscribers(:unconfirmed)
+    tier = membership_tiers(:monthly)
+
+    post admin_subscriber_comp_membership_path(subscriber), params: { tier_id: tier.id }
+    assert_redirected_to new_admin_session_path
+  end
 end

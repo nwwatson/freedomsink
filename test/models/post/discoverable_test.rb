@@ -98,6 +98,24 @@ class Post::DiscoverableTest < ActiveSupport::TestCase
     assert_nil post.next_post # scheduled_post is in future but not published
   end
 
+  test "related_posts preloads featured image attachments to avoid N+1 queries" do
+    post = posts(:published_post)
+    [ posts(:related_ruby_post), posts(:related_rails_post), posts(:featured_post) ].each do |related|
+      related.featured_image.attach(
+        io: StringIO.new("fake image data"),
+        filename: "test.jpg",
+        content_type: "image/jpeg"
+      )
+    end
+
+    related = post.related_posts(limit: 3)
+
+    assert_query_count(0, table: "active_storage_attachments") do
+      related.each(&:featured_image)
+      related.each { |rp| rp.featured_image.attached? }
+    end
+  end
+
   test "related_posts for a post with no tags falls back to category" do
     # Create a post with no tags but a category
     post = Post.create!(title: "No Tags Post", user: users(:admin), category: categories(:technology),

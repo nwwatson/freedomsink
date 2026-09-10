@@ -43,6 +43,18 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "GET show renders the published date in Spanish when site locale is es" do
+    SiteSetting.current.update!(locale: "es")
+    post = posts(:published_post)
+
+    get post_path(post, slug: post.slug)
+
+    assert_response :success
+    assert_select "time", text: I18n.l(post.published_at.to_date, format: :long, locale: :es)
+  ensure
+    SiteSetting.current.update!(locale: "en")
+  end
+
   test "GET show includes meta tags" do
     get post_path(posts(:published_post), slug: posts(:published_post).slug)
     assert_response :success
@@ -71,6 +83,18 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   test "GET index with non-matching search shows no posts" do
     get root_path(q: "xyznonexistent")
     assert_response :success
+  end
+
+  test "GET index shows search snippet even when the plain listing was cached first" do
+    with_fragment_caching do
+      get root_path
+      assert_response :success
+      assert_select "mark", count: 0
+
+      get root_path(q: "innovation")
+      assert_response :success
+      assert_select "mark"
+    end
   end
 
   test "GET index includes dark theme style tag" do
