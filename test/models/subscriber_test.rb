@@ -1,6 +1,8 @@
 require "test_helper"
 
 class SubscriberTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
+
   test "valid subscriber" do
     subscriber = Subscriber.new(email: "new@example.com")
     assert subscriber.valid?
@@ -93,5 +95,43 @@ class SubscriberTest < ActiveSupport::TestCase
     subscriber.resubscribe!
     assert_not subscriber.unsubscribed?
     assert_nil subscriber.unsubscribed_at
+  end
+
+  test "subscribe_or_sign_in! creates a new subscriber and delivers a confirmation email" do
+    assert_difference "Subscriber.count", 1 do
+      assert_enqueued_emails 1 do
+        Subscriber.subscribe_or_sign_in!(email: "brandnew@example.com")
+      end
+    end
+
+    subscriber = Subscriber.find_by(email: "brandnew@example.com")
+    assert_not_nil subscriber.auth_token
+  end
+
+  test "subscribe_or_sign_in! sets source_post_id for a new subscriber" do
+    published_post = posts(:published_post)
+    subscriber = Subscriber.subscribe_or_sign_in!(email: "withpost@example.com", source_post_id: published_post.id)
+    assert_equal published_post.id, subscriber.source_post_id
+  end
+
+  test "subscribe_or_sign_in! sends a magic link and does not duplicate an existing subscriber" do
+    existing = subscribers(:confirmed)
+
+    assert_no_difference "Subscriber.count" do
+      assert_enqueued_emails 1 do
+        Subscriber.subscribe_or_sign_in!(email: existing.email)
+      end
+    end
+
+    assert_not_nil existing.reload.auth_token
+  end
+
+  test "subscribe_or_sign_in! does not overwrite source_post_id for an existing subscriber" do
+    existing = subscribers(:from_published_post)
+    original_source = existing.source_post_id
+
+    Subscriber.subscribe_or_sign_in!(email: existing.email, source_post_id: posts(:featured_post).id)
+
+    assert_equal original_source, existing.reload.source_post_id
   end
 end

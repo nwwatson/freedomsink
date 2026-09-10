@@ -21,6 +21,7 @@ module Admin
     def show
       @subscriber = Subscriber.includes(:identity, :subscriber_labels).find(params[:id])
       @available_labels = SubscriberLabel.ordered - @subscriber.subscriber_labels
+      @available_membership_tiers = MembershipTier.active.ordered
     end
   end
 end

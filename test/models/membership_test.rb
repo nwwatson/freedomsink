@@ -29,4 +29,18 @@ class MembershipTest < ActiveSupport::TestCase
   test "complimentary? returns false when stripe_subscription_id present" do
     assert_not memberships(:active_membership).complimentary?
   end
+
+  test "grant_complimentary! creates an active membership with no stripe subscription" do
+    subscriber = subscribers(:unconfirmed)
+    tier = membership_tiers(:annual)
+
+    membership = Membership.grant_complimentary!(subscriber: subscriber, membership_tier: tier)
+
+    assert membership.persisted?
+    assert membership.active?
+    assert membership.complimentary?
+    assert_equal subscriber, membership.subscriber
+    assert_equal tier, membership.membership_tier
+    assert membership.current_period_end > 90.years.from_now
+  end
 end
