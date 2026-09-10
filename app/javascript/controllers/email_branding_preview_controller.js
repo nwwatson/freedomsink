@@ -7,8 +7,7 @@ export default class extends Controller {
     "previewTemplate", "previewFont", "previewPreheader", "previewFooter",
     "previewSocialTwitter", "previewSocialGithub", "previewSocialLinkedin", "previewSocialWebsite",
     "previewSocial",
-    "accentColor", "accentColorText", "backgroundColor", "backgroundColorText",
-    "textColor", "textColorText", "headingColor", "headingColorText",
+    "accentColor", "backgroundColor", "textColor", "headingColor",
     "template", "fontFamily", "preheader", "footer",
     "socialTwitter", "socialGithub", "socialLinkedin", "socialWebsite"
   ]
@@ -18,11 +17,6 @@ export default class extends Controller {
   }
 
   update() {
-    this.#syncPair("accentColor")
-    this.#syncPair("backgroundColor")
-    this.#syncPair("textColor")
-    this.#syncPair("headingColor")
-
     if (this.hasPreviewAccentTarget && this.hasAccentColorTarget) {
       this.previewAccentTarget.style.backgroundColor = this.accentColorTarget.value
     }
@@ -94,27 +88,6 @@ export default class extends Controller {
 
     if (this.hasPreviewSocialTarget) {
       this.previewSocialTarget.style.display = anyVisible ? "flex" : "none"
-    }
-  }
-
-  #syncPair(name) {
-    const colorTarget = `${name}Target`
-    const textTarget = `${name}TextTarget`
-    const hasColor = `has${capitalize(name)}Target`
-    const hasText = `has${capitalize(name)}TextTarget`
-
-    if (this[hasColor] && this[hasText]) {
-      const colorEl = this[colorTarget]
-      const textEl = this[textTarget]
-
-      if (document.activeElement === textEl) {
-        const val = textEl.value.trim()
-        if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-          colorEl.value = val
-        }
-      } else {
-        textEl.value = colorEl.value
-      }
     }
   }
 }

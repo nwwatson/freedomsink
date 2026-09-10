@@ -98,7 +98,7 @@
 
     <%# Dark Theme %>
     <% dark_themes_json = SiteSetting::DarkTheme::DARK_THEMES.reject { |k, _| k == "custom" }.transform_values { |v| { bg: v[:bg], text: v[:text], accent: v[:accent] } }.to_json %>
-    <fieldset class="border-t border-gray-200 pt-6" data-controller="dark-theme-preview" data-dark-theme-preview-themes-value="<%= dark_themes_json %>">
+    <fieldset class="border-t border-gray-200 pt-6" data-controller="dark-theme-preview" data-dark-theme-preview-themes-value="<%= dark_themes_json %>" data-action="color-pair:change->dark-theme-preview#updateCustom">
       <legend class="text-lg font-semibold text-gray-900"><%= t('admin.settings.edit.dark_theme') %></legend>
       <p class="mt-1 text-sm text-gray-600"><%= t('admin.settings.edit.dark_theme_description') %></p>
 
@@ -114,31 +114,31 @@
           <div data-dark-theme-preview-target="customFields" class="<%= @site_setting.dark_theme == 'custom' ? '' : 'hidden' %> space-y-4">
             <div>
               <%= f.label :dark_bg_color, t('admin.settings.edit.background_color'), class: "block text-sm font-medium text-gray-900" %>
-              <div class="mt-2 flex items-center gap-3">
+              <div class="mt-2 flex items-center gap-3" data-controller="color-pair">
                 <%= f.color_field :dark_bg_color, class: "h-9 w-14 cursor-pointer rounded border border-gray-300",
-                      data: { dark_theme_preview_target: "bgColor", action: "input->dark-theme-preview#updateCustom" } %>
+                      data: { dark_theme_preview_target: "bgColor", color_pair_target: "color", action: "input->color-pair#fromColor" } %>
                 <%= f.text_field :dark_bg_color, class: "block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm font-mono",
-                      data: { dark_theme_preview_target: "bgColorText", action: "input->dark-theme-preview#updateCustomText" } %>
+                      data: { color_pair_target: "text", action: "input->color-pair#fromText" } %>
               </div>
             </div>
 
             <div>
               <%= f.label :dark_text_color, t('admin.settings.edit.text_color'), class: "block text-sm font-medium text-gray-900" %>
-              <div class="mt-2 flex items-center gap-3">
+              <div class="mt-2 flex items-center gap-3" data-controller="color-pair">
                 <%= f.color_field :dark_text_color, class: "h-9 w-14 cursor-pointer rounded border border-gray-300",
-                      data: { dark_theme_preview_target: "textColor", action: "input->dark-theme-preview#updateCustom" } %>
+                      data: { dark_theme_preview_target: "textColor", color_pair_target: "color", action: "input->color-pair#fromColor" } %>
                 <%= f.text_field :dark_text_color, class: "block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm font-mono",
-                      data: { dark_theme_preview_target: "textColorText", action: "input->dark-theme-preview#updateCustomText" } %>
+                      data: { color_pair_target: "text", action: "input->color-pair#fromText" } %>
               </div>
             </div>
 
             <div>
               <%= f.label :dark_accent_color, t('admin.settings.edit.accent_color'), class: "block text-sm font-medium text-gray-900" %>
-              <div class="mt-2 flex items-center gap-3">
+              <div class="mt-2 flex items-center gap-3" data-controller="color-pair">
                 <%= f.color_field :dark_accent_color, class: "h-9 w-14 cursor-pointer rounded border border-gray-300",
-                      data: { dark_theme_preview_target: "accentColor", action: "input->dark-theme-preview#updateCustom" } %>
+                      data: { dark_theme_preview_target: "accentColor", color_pair_target: "color", action: "input->color-pair#fromColor" } %>
                 <%= f.text_field :dark_accent_color, class: "block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm font-mono",
-                      data: { dark_theme_preview_target: "accentColorText", action: "input->dark-theme-preview#updateCustomText" } %>
+                      data: { color_pair_target: "text", action: "input->color-pair#fromText" } %>
               </div>
             </div>
           </div>
