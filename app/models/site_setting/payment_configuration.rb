@@ -1,13 +1,7 @@
 module SiteSetting::PaymentConfiguration
   extend ActiveSupport::Concern
 
-  SUPPORTED_CURRENCIES = {
-    "usd" => "USD ($)",
-    "eur" => "EUR (\u20AC)",
-    "gbp" => "GBP (\u00A3)",
-    "cad" => "CAD ($)",
-    "aud" => "AUD ($)"
-  }.freeze
+  SUPPORTED_CURRENCIES = Currency::NAMES.to_h { |code, name| [ code, "#{name} (#{Currency.symbol(code)})" ] }.freeze
 
   included do
     encrypts :stripe_secret_key, deterministic: false
@@ -22,10 +16,6 @@ module SiteSetting::PaymentConfiguration
   end
 
   def currency_symbol
-    case payments_currency
-    when "eur" then "\u20AC"
-    when "gbp" then "\u00A3"
-    else "$"
-    end
+    Currency.symbol(payments_currency)
   end
 end

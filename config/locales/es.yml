@@ -1,4 +1,7 @@
 es:
+  errors:
+    messages:
+      hex_color: "debe ser un color hexadecimal válido (p. ej. #1a1a2e)"
   shared:
     home: "Inicio"
     about: "Acerca de"

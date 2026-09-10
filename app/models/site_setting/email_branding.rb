@@ -14,8 +14,6 @@ module SiteSetting::EmailBranding
     "verdana" => { name: "Verdana", stack: "Verdana, Geneva, sans-serif" }
   }.freeze
 
-  HEX_COLOR_FORMAT = /\A#[0-9a-fA-F]{6}\z/
-
   DEFAULT_ACCENT_COLOR = "#18181b"
   DEFAULT_BACKGROUND_COLOR = "#f4f4f5"
   DEFAULT_BODY_TEXT_COLOR = "#3f3f46"
@@ -26,10 +24,8 @@ module SiteSetting::EmailBranding
 
     validates :email_default_template, inclusion: { in: EMAIL_TEMPLATES.keys }, allow_blank: true
     validates :email_font_family, inclusion: { in: EMAIL_FONT_FAMILIES.keys }, allow_blank: true
-    validates :email_accent_color, format: { with: HEX_COLOR_FORMAT }, allow_blank: true
-    validates :email_background_color, format: { with: HEX_COLOR_FORMAT }, allow_blank: true
-    validates :email_body_text_color, format: { with: HEX_COLOR_FORMAT }, allow_blank: true
-    validates :email_heading_color, format: { with: HEX_COLOR_FORMAT }, allow_blank: true
+    validates :email_accent_color, :email_background_color, :email_body_text_color, :email_heading_color,
+              hex_color: true, allow_blank: true
   end
 
   def email_font_stack

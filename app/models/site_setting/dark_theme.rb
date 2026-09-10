@@ -12,7 +12,7 @@ module SiteSetting::DarkTheme
   included do
     validates :dark_theme, inclusion: { in: DARK_THEMES.keys }
     validates :dark_bg_color, :dark_text_color, :dark_accent_color,
-              format: { with: /\A#[0-9a-fA-F]{6}\z/, message: "must be a valid hex color (e.g. #1a1a2e)" },
+              hex_color: { message: "must be a valid hex color (e.g. #1a1a2e)" },
               if: -> { dark_theme == "custom" }
   end
 
