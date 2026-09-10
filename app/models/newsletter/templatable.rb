@@ -3,7 +3,7 @@ module Newsletter::Templatable
 
   included do
     validates :template, inclusion: { in: SiteSetting::EmailBranding::EMAIL_TEMPLATES.keys }, allow_nil: true
-    validates :accent_color, format: { with: SiteSetting::EmailBranding::HEX_COLOR_FORMAT }, allow_nil: true, allow_blank: true
+    validates :accent_color, hex_color: true, allow_nil: true, allow_blank: true
     validates :preheader_text, length: { maximum: 150 }, allow_nil: true
   end
 

@@ -1,4 +1,7 @@
 en:
+  errors:
+    messages:
+      hex_color: "must be a valid hex color (e.g. #1a1a2e)"
   # Shared / common strings
   shared:
     home: "Home"

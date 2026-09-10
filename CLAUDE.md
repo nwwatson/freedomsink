@@ -74,6 +74,8 @@ app/models/page.rb                    # class Page (custom static pages)
 app/models/page/navigable.rb         # module Page::Navigable (navigation menu scope)
 app/models/concerns/publishable.rb   # module Publishable — shared `publishes_at` macro (live scope, publish!/schedule!/revert_to_draft!), included by Post, Page, Newsletter
 app/validators/future_validator.rb   # FutureValidator: shared "must be in the future" validation used by Publishable
+app/validators/hex_color_validator.rb # HexColorValidator: shared `validates :x, hex_color: true` for #RRGGBB colors, used by SiteSetting::DarkTheme, SiteSetting::EmailBranding, SubscriberLabel, Newsletter::Templatable
+app/models/currency.rb               # Currency: SYMBOLS/NAMES/CODES, `.symbol`, `.format(cents, code)`, `.options_for_select` — used by MembershipTier#formatted_price and SiteSetting::PaymentConfiguration#currency_symbol/SUPPORTED_CURRENCIES
 app/models/site_setting/localization.rb  # module SiteSetting::Localization (i18n)
 app/models/identity/handleable.rb    # module Identity::Handleable (handle validation/normalization)
 app/models/identity/profileable.rb   # module Identity::Profileable (avatar, bio, social links)
