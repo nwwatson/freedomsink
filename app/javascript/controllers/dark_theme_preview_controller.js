@@ -3,8 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "themeSelect", "customFields", "preview", "previewLink",
-    "bgColor", "bgColorText", "textColor", "textColorText",
-    "accentColor", "accentColorText"
+    "bgColor", "textColor", "accentColor"
   ]
   static values = { themes: Object }
 
@@ -28,24 +27,10 @@ export default class extends Controller {
   }
 
   updateCustom() {
-    this.bgColorTextTarget.value = this.bgColorTarget.value
-    this.textColorTextTarget.value = this.textColorTarget.value
-    this.accentColorTextTarget.value = this.accentColorTarget.value
     this.applyPreview(
       this.bgColorTarget.value,
       this.textColorTarget.value,
       this.accentColorTarget.value
-    )
-  }
-
-  updateCustomText() {
-    this.bgColorTarget.value = this.bgColorTextTarget.value
-    this.textColorTarget.value = this.textColorTextTarget.value
-    this.accentColorTarget.value = this.accentColorTextTarget.value
-    this.applyPreview(
-      this.bgColorTextTarget.value,
-      this.textColorTextTarget.value,
-      this.accentColorTextTarget.value
     )
   }
 
