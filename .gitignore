@@ -40,3 +40,6 @@
 /.kamal/.env
 .DS_Store
 .claude/
+
+# Schema is dumped to db/structure.sql (schema_format = :sql)
+/db/schema.rb
