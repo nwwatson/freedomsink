@@ -44,6 +44,12 @@ bin/rails db:seed      # Load seed data
 bin/rails db:reset     # Drop and recreate from schema
 ```
 
+The app uses `config.active_record.schema_format = :sql`, so **`db/structure.sql` is the
+authoritative schema** — SQL format is required to preserve the FTS5 virtual tables and
+triggers that Rails' Ruby schema dumper cannot express. There is no `db/schema.rb`; it is
+gitignored, and `db/*_schema.rb` (the generated Solid Queue/Cache/Cable dumps) plus
+`db/schema.rb` are excluded from RuboCop in `.rubocop.yml`.
+
 ## Architecture
 
 Refer to `docs/design_guide.md` for comprehensive architectural patterns. Key principles:
