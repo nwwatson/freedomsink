@@ -299,6 +299,8 @@ es:
         subscribed: "Suscrito"
         labels: "Etiquetas"
         add_label: "Agregar etiqueta"
+        grant_membership: "Otorgar membresía de cortesía"
+        grant_membership_button: "Otorgar"
     subscriber_labels:
       index:
         title: "Etiquetas de suscriptores"

@@ -4,13 +4,7 @@ module Admin
       before_action :require_image_ai_configured
 
       def suggest_prompt
-        context = ::Ai::PostContextBuilder.new(@post).build
-        prompt = ::Ai::SystemPrompts.image_prompt(context)
-
-        chat = ::Ai::Client.chat
-        response = chat.ask(prompt)
-
-        @suggested_prompt = response.content.to_s.strip
+        @suggested_prompt = ::Ai::ImagePromptSuggester.new(@post).call
 
         respond_to do |format|
           format.turbo_stream {

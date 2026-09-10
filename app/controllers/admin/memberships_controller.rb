@@ -1,6 +1,7 @@
 module Admin
   class MembershipsController < BaseController
-    before_action :set_membership, only: [ :show, :destroy, :comp ]
+    before_action :set_membership, only: [ :show, :destroy ]
+    before_action :set_subscriber, only: [ :comp ]
 
     def index
       @memberships = Membership.by_recency.includes(:subscriber, :membership_tier)
@@ -16,16 +17,8 @@ module Admin
     end
 
     def comp
-      subscriber = Subscriber.find(params[:subscriber_id] || params[:id])
       tier = MembershipTier.find(params[:tier_id])
-
-      Membership.create!(
-        subscriber: subscriber,
-        membership_tier: tier,
-        status: :active,
-        current_period_start: Time.current,
-        current_period_end: 100.years.from_now
-      )
+      Membership.grant_complimentary!(subscriber: @subscriber, membership_tier: tier)
 
       redirect_to admin_memberships_path, notice: t("flash.admin.memberships.comp_granted")
     end
@@ -34,6 +27,10 @@ module Admin
 
     def set_membership
       @membership = Membership.find(params[:id])
+    end
+
+    def set_subscriber
+      @subscriber = Subscriber.find(params[:subscriber_id])
     end
   end
 end

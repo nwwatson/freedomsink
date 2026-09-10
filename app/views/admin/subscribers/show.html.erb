@@ -39,4 +39,20 @@
       <% end %>
     <% end %>
   </div>
+
+  <%# Complimentary membership %>
+  <% if @available_membership_tiers.any? %>
+    <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+      <h2 class="text-sm font-semibold text-gray-900 mb-4"><%= t('admin.subscribers.show.grant_membership') %></h2>
+
+      <%= form_with url: admin_subscriber_comp_membership_path(@subscriber), class: "flex items-center gap-2" do |f| %>
+        <select name="tier_id" class="rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-600">
+          <% @available_membership_tiers.each do |tier| %>
+            <option value="<%= tier.id %>"><%= tier.name %> (<%= tier.formatted_price %><%= tier.interval_label %>)</option>
+          <% end %>
+        </select>
+        <%= f.submit t('admin.subscribers.show.grant_membership_button'), class: "rounded-md bg-gray-900 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-700 cursor-pointer" %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

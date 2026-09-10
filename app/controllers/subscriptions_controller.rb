@@ -1,16 +1,6 @@
 class SubscriptionsController < ApplicationController
   def create
-    @subscriber = Subscriber.find_or_initialize_by(email: params[:email])
-
-    if @subscriber.new_record?
-      @subscriber.source_post_id = params[:source_post_id] if params[:source_post_id].present?
-      @subscriber.save!
-      @subscriber.generate_auth_token!
-      SubscriberMailer.confirmation(@subscriber).deliver_later
-    else
-      @subscriber.generate_auth_token!
-      SubscriberMailer.magic_link(@subscriber).deliver_later
-    end
+    @subscriber = Subscriber.subscribe_or_sign_in!(email: params[:email], source_post_id: params[:source_post_id])
 
     respond_to do |format|
       format.turbo_stream

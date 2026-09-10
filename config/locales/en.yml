@@ -303,6 +303,8 @@ en:
         subscribed: "Subscribed"
         labels: "Labels"
         add_label: "Add label"
+        grant_membership: "Grant complimentary membership"
+        grant_membership_button: "Grant"
     subscriber_labels:
       index:
         title: "Subscriber Labels"

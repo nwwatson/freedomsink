@@ -1,10 +1,19 @@
 require "test_helper"
+require "ostruct"
 
 class Admin::Ai::FeaturedImagesControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in_as(:admin)
     @post = posts(:published_post)
     SiteSetting.current.update!(claude_api_key: "test-key", gemini_api_key: "test-gemini-key")
+  end
+
+  def stub_client_chat(fake_chat)
+    original_chat = Ai::Client.method(:chat)
+    Ai::Client.define_singleton_method(:chat) { |*| fake_chat }
+    yield
+  ensure
+    Ai::Client.define_singleton_method(:chat, original_chat)
   end
 
   test "suggest_prompt redirects when image AI not configured" do
@@ -38,5 +47,29 @@ class Admin::Ai::FeaturedImagesControllerTest < ActionDispatch::IntegrationTest
     post admin_post_ai_featured_image_path(@post),
       params: { prompt: "" }
     assert_response :unprocessable_entity
+  end
+
+  test "suggest_prompt renders the suggested prompt on success" do
+    fake_chat = Object.new
+    fake_chat.define_singleton_method(:ask) { |_prompt| OpenStruct.new(content: "A vivid landscape at sunset.") }
+
+    stub_client_chat(fake_chat) do
+      post suggest_prompt_admin_post_ai_featured_image_path(@post), as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_includes response.body, "A vivid landscape at sunset."
+  end
+
+  test "suggest_prompt renders an error when the LLM call fails" do
+    fake_chat = Object.new
+    fake_chat.define_singleton_method(:ask) { |_prompt| raise RubyLLM::Error.new("boom") }
+
+    stub_client_chat(fake_chat) do
+      post suggest_prompt_admin_post_ai_featured_image_path(@post), as: :turbo_stream
+    end
+
+    assert_response :success
+    assert_includes response.body, "boom"
   end
 end
