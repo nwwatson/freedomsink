@@ -5,6 +5,9 @@ class Post < ApplicationRecord
   include Discoverable
   include Versionable
   include Accessible
+  include Webhookable
+  include Federatable
+  include Notifiable
 
   enum :status, { draft: 0, scheduled: 1, published: 2 }
 
@@ -13,6 +16,7 @@ class Post < ApplicationRecord
   has_many :post_tags, dependent: :destroy
   has_many :tags, through: :post_tags
   has_many :loves, dependent: :destroy
+  has_many :reading_list_items, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :post_views, dependent: :destroy
   has_many :attributed_subscribers, class_name: "Subscriber", foreign_key: :source_post_id, dependent: :nullify

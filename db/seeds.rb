@@ -21,11 +21,13 @@ Comment.delete_all
 Love.delete_all
 PostView.delete_all
 PostTag.delete_all
+MailingListPost.delete_all
 Post.delete_all
 ActionText::RichText.where(record_type: "Page").delete_all
 Page.delete_all
 Session.delete_all
 User.delete_all
+MailingListSubscription.delete_all
 Subscriber.delete_all
 Identity.delete_all
 Tag.delete_all
@@ -104,8 +106,6 @@ about_page = Page.create!(
   user: admin,
   status: :published,
   published_at: 1.year.ago,
-  show_in_navigation: true,
-  position: 0,
   meta_description: "Learn more about #{SiteSetting.current.site_name}",
   content: "<p>#{SiteSetting.current.site_name} is a thoughtfully crafted publication focused on delivering quality writing and ideas.</p><p>We believe in the power of long-form writing to educate, inspire, and spark meaningful conversations.</p>"
 )
@@ -116,13 +116,40 @@ contact_page = Page.create!(
   user: admin,
   status: :published,
   published_at: 1.year.ago,
-  show_in_navigation: true,
-  position: 1,
   meta_description: "Get in touch with us",
   content: "<p>We'd love to hear from you. Whether you have a question, feedback, or just want to say hello, don't hesitate to reach out.</p><p>Email us at hello@example.com</p>"
 )
 
 puts "  Created 2 pages (About, Contact)"
+
+# ---------------------------------------------------------------------------
+# Navigation
+# ---------------------------------------------------------------------------
+NavigationItem.delete_all
+[
+  { label: "Home", url: "/", location: :header },
+  { label: about_page.title, url: "/#{about_page.slug}", location: :header },
+  { label: contact_page.title, url: "/#{contact_page.slug}", location: :header },
+  { label: "RSS", url: "/feed.xml", location: :footer },
+  { label: "GitHub", url: "https://github.com/nwwatson/prose", location: :social, open_in_new_tab: true }
+].each { |attrs| NavigationItem.create!(attrs) }
+
+puts "  Created #{NavigationItem.count} navigation items"
+
+# ---------------------------------------------------------------------------
+# Mailing lists (created before subscribers so signups join the default list)
+# ---------------------------------------------------------------------------
+main_list = MailingList.find_or_create_by!(slug: "newsletter") do |list|
+  list.name = "Newsletter"
+  list.description = "Every new post, as it's published."
+  list.subscribe_by_default = true
+end
+deep_dives_list = MailingList.find_or_create_by!(slug: "deep-dives") do |list|
+  list.name = "Deep Dives"
+  list.description = "Occasional long-form technical essays."
+  list.frequency = "Monthly"
+end
+puts "  Created #{MailingList.count} mailing lists"
 
 # ---------------------------------------------------------------------------
 # Subscribers (100)
@@ -152,6 +179,7 @@ subscribers = 100.times.map do |i|
   confirmed_at = i < 90 ? rand(1..180).days.ago : nil
 
   subscriber = Subscriber.create!(email: email, confirmed_at: confirmed_at)
+  subscriber.mailing_list_subscriptions.create!(mailing_list: deep_dives_list) if i.even?
   subscriber.identity.update!(handle: handle)
   subscriber_identities << subscriber.identity
   subscriber
@@ -312,7 +340,10 @@ posts = []
     status: :published,
     published_at: published_at,
     featured: i < 5,
-    content: content_html
+    content: content_html,
+    mailing_lists: i % 5 == 0 ? [ main_list, deep_dives_list ] : [ main_list ],
+    # Seeded posts count as already emailed, so seeding doesn't queue ~55 new-post notifications.
+    subscribers_notified_at: published_at
   )
 
   # Assign 1-4 random tags

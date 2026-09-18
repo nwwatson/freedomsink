@@ -33,13 +33,13 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET show renders published post" do
-    get post_path(posts(:published_post), slug: posts(:published_post).slug)
+    get post_path(slug: posts(:published_post).slug)
     assert_response :success
     assert_select "h1", text: posts(:published_post).title
   end
 
   test "GET show returns 404 for draft post" do
-    get post_path(posts(:draft_post), slug: posts(:draft_post).slug)
+    get post_path(slug: posts(:draft_post).slug)
     assert_response :not_found
   end
 
@@ -47,7 +47,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     SiteSetting.current.update!(locale: "es")
     post = posts(:published_post)
 
-    get post_path(post, slug: post.slug)
+    get post_path(slug: post.slug)
 
     assert_response :success
     assert_select "time", text: I18n.l(post.published_at.to_date, format: :long, locale: :es)
@@ -56,7 +56,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET show includes meta tags" do
-    get post_path(posts(:published_post), slug: posts(:published_post).slug)
+    get post_path(slug: posts(:published_post).slug)
     assert_response :success
     assert_select "meta[property='og:title']" do |elements|
       assert_equal posts(:published_post).title, elements.first["content"]
@@ -64,7 +64,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET show includes JSON-LD" do
-    get post_path(posts(:published_post), slug: posts(:published_post).slug)
+    get post_path(slug: posts(:published_post).slug)
     assert_select "script[type='application/ld+json']"
   end
 
@@ -128,11 +128,43 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     end
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-      get post_path(post, slug: post.slug)
+      get post_path(slug: post.slug)
     end
 
     assert_response :success
     assert_equal 2, comment_queries
     assert_select ".comment__body", text: /Unapproved reply/, count: 0
+  end
+
+  test "GET show renders share buttons with encoded post url and title" do
+    post = posts(:published_post)
+    post.update_columns(title: %q(Tips & "Tricks" <b>?</b> #1))
+
+    get post_path(slug: post.slug)
+
+    assert_response :success
+    share_url = "http://www.example.com/posts/#{post.slug}"
+    encoded_url = ERB::Util.url_encode(share_url)
+    encoded_title = ERB::Util.url_encode(post.title)
+
+    assert_select ".share-buttons[data-share-url-value=?]", share_url
+    assert_select ".share-buttons[data-share-title-value=?]", post.title
+    assert_select "a[href=?][target=_blank][rel='noopener noreferrer']",
+      "https://twitter.com/intent/tweet?url=#{encoded_url}&text=#{encoded_title}"
+    assert_select "a[href=?][target=_blank][rel='noopener noreferrer']",
+      "https://www.linkedin.com/sharing/share-offsite/?url=#{encoded_url}"
+    assert_select "a[href=?][target=_blank][rel='noopener noreferrer']",
+      "https://www.facebook.com/sharer/sharer.php?u=#{encoded_url}"
+    assert_select "a[href=?]", "mailto:?subject=#{encoded_title}&body=#{encoded_url}"
+    assert_select ".share-buttons [aria-label]", count: 6
+    assert_no_match %r{<b>\?</b>}, response.body
+  end
+
+  test "approved fediverse replies are labeled on the post" do
+    comments(:top_level).update_columns(activitypub_uri: "https://remote.example/statuses/1")
+
+    get post_path(slug: posts(:published_post).slug)
+
+    assert_select ".comment__federated-badge", text: I18n.t("comments.via_fediverse")
   end
 end

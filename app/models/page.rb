@@ -1,7 +1,6 @@
 class Page < ApplicationRecord
   include Sluggable
   include Publishable
-  include Navigable
 
   enum :status, { draft: 0, published: 1 }
   publishes_at :published_at
@@ -17,6 +16,7 @@ class Page < ApplicationRecord
   RESERVED_SLUGS = %w[
     admin posts authors categories tags subscriptions feed sitemap robots up mcp
     subscriber_session handle handle_availability unsubscribe webhooks
+    reading-list email-preferences
   ].freeze
 
   validates :slug, exclusion: { in: RESERVED_SLUGS, message: "is reserved" }

@@ -1,7 +1,9 @@
 class Subscriber < ApplicationRecord
   include Authenticatable
   include Billable
+  include EmailPreferences
   include IdentityBacked
+  include ListSubscribable
 
   belongs_to :source_post, class_name: "Post", optional: true
   has_many :loves, through: :identity
@@ -17,8 +19,9 @@ class Subscriber < ApplicationRecord
 
   def self.subscribe_or_sign_in!(email:, source_post_id: nil)
     subscriber = find_or_initialize_by(email: email)
+    new_subscriber = subscriber.new_record?
 
-    if subscriber.new_record?
+    if new_subscriber
       subscriber.source_post_id = source_post_id if source_post_id.present?
       subscriber.save!
       subscriber.generate_auth_token!
@@ -27,6 +30,8 @@ class Subscriber < ApplicationRecord
       subscriber.generate_auth_token!
       SubscriberMailer.magic_link(subscriber).deliver_later
     end
+
+    WebhookDispatcher.deliver("subscriber.created", Webhooks::SubscriberSerializer.call(subscriber)) if new_subscriber
 
     subscriber
   end
@@ -44,7 +49,10 @@ class Subscriber < ApplicationRecord
   end
 
   def unsubscribe!
-    update!(unsubscribed_at: Time.current) unless unsubscribed?
+    return if unsubscribed?
+
+    update!(unsubscribed_at: Time.current)
+    WebhookDispatcher.deliver("subscriber.deleted", Webhooks::SubscriberSerializer.call(self))
   end
 
   def resubscribe!

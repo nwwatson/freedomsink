@@ -7,11 +7,19 @@ A self-hosted blogging platform built with Ruby on Rails 8.1 and the Solid stack
 - **Writing & Editing** — Rich text with [Lexxy](https://github.com/basecamp/lexxy), autosave, post scheduling, featured posts
 - **AI Assistant** — Chat (proofread, critique, brainstorm), SEO/social metadata generation, featured image generation (Gemini/OpenAI), streaming responses
 - **MCP Server** — [Model Context Protocol](https://modelcontextprotocol.io) endpoint for managing posts, categories, tags, and assets from Claude Desktop, Claude Code, or any MCP client
+- **REST API** — Versioned JSON API at `/api/v1/` for posts, categories, tags, site info, and assets, sharing the same bearer token as MCP
+- **Webhooks** — HMAC-signed outbound webhooks for post, subscriber, and comment events, with retries, a delivery log, and auto-disable on repeated failure
+- **Fediverse (ActivityPub)** — Opt-in federation: Mastodon and other fediverse users can follow the site as `@blog@yourdomain`, get new posts in their feeds, like them, and reply — replies arrive as comments held for moderation
+- **Content Export** — Download your whole site as a Markdown zip (one file per post/page with YAML front matter, plus images) or a full JSON backup including subscribers; exports run in the background from **Admin → Export**
 - **Content Organization** — Categories, tags with searchable combo box and inline creation
-- **Reader Engagement** — Comments with threading and moderation, loves, subscriber magic-link auth, email notifications
+- **Reader Engagement** — Comments with threading and moderation, loves, social share buttons, subscriber magic-link auth, email notifications
+- **Email Digests** — Subscribers choose how often they hear about new posts at `/email-preferences` (linked from every post email and the unsubscribe page): every new post, a weekly digest (Mondays 08:00), a monthly digest (the 1st, 08:00), or no post emails; newsletters are unaffected. Digests use the site's email branding and are skipped when nothing new was published
+- **Multiple Newsletters (Mailing Lists)** — Run several subscribable lists from one site (e.g. a weekly roundup and a deep-dives list) under **Admin → Mailing Lists**, with per-list subscriber counts. New subscribers join the lists marked "subscribe by default" and pick the rest on `/email-preferences`. Each post is emailed to the lists checked in the editor's Settings tab the first time it's published — from the editor, the API, MCP, or the scheduler, and never twice — and digests only include posts from a subscriber's lists. Campaigns can target a single list, optionally narrowed by a segment
+- **Reading List** — Readers bookmark posts to `/reading-list`; saved on the device with no account, and synced across devices once they subscribe and sign in
 - **Social Embeds** — X/Twitter and YouTube via oEmbed
 - **Analytics** — Dashboard with view tracking, subscriber growth, post engagement
-- **Custom Pages** — Static pages with rich text editor, top-level URLs (e.g. `/about`), optional navigation menu integration
+- **Custom Pages** — Static pages with rich text editor, top-level URLs (e.g. `/about`)
+- **Navigation Menus** — Customize header links, footer links, and footer social icons from **Admin → Navigation** (drag-and-drop ordering, internal paths or external URLs, optional open-in-new-tab); social icons are picked automatically from the URL (X, GitHub, LinkedIn, Bluesky, Mastodon, YouTube, Instagram, and more)
 - **Customization** — 30+ Google Fonts, adjustable typography, live preview
 - **Internationalization** — Full i18n support with English and Spanish included; site-wide locale setting
 - **SEO** — Slugged URLs, meta descriptions, RSS feed, XML sitemap
@@ -99,6 +107,15 @@ Prose exposes a [Model Context Protocol](https://modelcontextprotocol.io) server
 ### Available Tools
 
 Post management (`list_posts`, `get_post`, `create_post`, `update_post`, `delete_post`, `publish_post`, `schedule_post`, `unpublish_post`), site info (`get_site_info`, `list_categories`, `list_tags`, `create_tag`), and assets (`upload_asset`, `set_featured_image`).
+
+## REST API
+
+Prose also exposes a versioned JSON REST API at `/api/v1/`, using the same `prose_`-prefixed bearer tokens as MCP, for integrations that don't speak MCP (mobile apps, custom frontends, data pipelines). See [docs/api_setup.md](docs/api_setup.md) for the full endpoint reference.
+
+```bash
+curl https://your-domain.com/api/v1/posts \
+  -H "Authorization: Bearer prose_YOUR_TOKEN"
+```
 
 ## Contributing
 
@@ -241,6 +258,8 @@ env:
     SMTP_FROM: noreply@yourdomain.com
 ```
 
+Recurring email jobs (post digests, scheduled newsletters) run on the schedules in `config/recurring.yml`. Cron times use the server time zone, which is UTC in the Docker image.
+
 ### Optional: S3-Compatible Storage
 
 For file uploads stored in S3 instead of local disk:
@@ -273,6 +292,14 @@ env:
 
 Manage passkeys at `/admin/passkeys` after signing in.
 
+### Optional: Fediverse (ActivityPub)
+
+Turn on **Admin → Settings → Fediverse** to let Mastodon, Threads, and other fediverse users follow your site. Pick a username (default `blog`); people follow `@blog@yourdomain.com`. The site serves WebFinger at `/.well-known/webfinger` and an ActivityPub actor, inbox, and outbox under `/activitypub/`.
+
+- Publishing a post delivers it to followers; editing or unpublishing it sends an update or a delete. Members-only and paid posts are shared only as a teaser and a link.
+- Fediverse likes appear on each post's admin dashboard. Replies become comments held for moderation at `/admin/comments`, labeled "Fediverse".
+- **`APP_HOST` must be set to your permanent public domain, and the site must be served over HTTPS**, before you enable federation. Remote servers store the actor and post URLs built from it, so changing the domain later breaks existing follows.
+
 ### Environment Variables Reference
 
 | Variable | Required | Default | Description |
@@ -281,7 +308,7 @@ Manage passkeys at `/admin/passkeys` after signing in.
 | `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY` | Yes | — | Encrypts sensitive model attributes (AI API keys) |
 | `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` | Yes | — | Deterministic encryption for queryable fields |
 | `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT` | Yes | — | Salt for encryption key derivation |
-| `APP_HOST` | No | `example.com` | Your domain name (enables host authorization) |
+| `APP_HOST` | No | `example.com` | Your domain name (enables host authorization; required for fediverse federation) |
 | `RAILS_ASSUME_SSL` | No | `true` | Set to `false` if not using SSL |
 | `SOLID_QUEUE_IN_PUMA` | No | `true` | Run background jobs in the web process |
 | `ACTIVE_STORAGE_SERVICE` | No | `local` | Storage backend: `local` or `amazon` |

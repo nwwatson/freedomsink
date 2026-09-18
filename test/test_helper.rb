@@ -44,6 +44,16 @@ module ActiveSupport
       ActionController::Base.perform_caching = original_perform_caching
     end
 
+    def with_reading_list_limit(limit)
+      original = ReadingListItem::MAX_ITEMS
+      ReadingListItem.send(:remove_const, :MAX_ITEMS)
+      ReadingListItem.const_set(:MAX_ITEMS, limit)
+      yield
+    ensure
+      ReadingListItem.send(:remove_const, :MAX_ITEMS)
+      ReadingListItem.const_set(:MAX_ITEMS, original)
+    end
+
     def assert_query_count(expected, table:)
       count = 0
       counter = ->(*, payload) do
@@ -70,5 +80,46 @@ class ActionDispatch::IntegrationTest
   def sign_in_subscriber(subscriber)
     subscriber.generate_auth_token!
     get subscriber_session_path(token: subscriber.auth_token)
+  end
+end
+
+module ActivityPubTestHelper
+  include ActiveJob::TestHelper
+
+  REMOTE_KEY = OpenSSL::PKey::RSA.new(2048)
+  REMOTE_ACTOR_URI = "https://remote.example/users/alice".freeze
+  REMOTE_KEY_ID = "#{REMOTE_ACTOR_URI}#main-key".freeze
+
+  def enable_federation!(**attrs)
+    SiteSetting.current.update!(activitypub_enabled: true, **attrs)
+  end
+
+  def remote_actor(**attrs)
+    FediverseActor.create!({
+      uri: REMOTE_ACTOR_URI,
+      inbox_url: "#{REMOTE_ACTOR_URI}/inbox",
+      shared_inbox_url: "https://remote.example/inbox",
+      key_id: REMOTE_KEY_ID,
+      public_key_pem: REMOTE_KEY.public_to_pem,
+      username: "alice",
+      name: "Alice",
+      profile_url: "https://remote.example/@alice",
+      fetched_at: Time.current
+    }.merge(attrs))
+  end
+
+  # Headers for a request signed by the remote test actor, as Mastodon sends them.
+  def signed_inbox_headers(body, key: REMOTE_KEY, key_id: REMOTE_KEY_ID, path: "/activitypub/inbox")
+    ActivityPub::Signature.sign(method: :post, url: "http://www.example.com#{path}", key: key, key_id: key_id, body: body)
+      .merge("Content-Type" => "application/activity+json")
+  end
+
+  # Temporarily replaces a singleton method (Minitest 6 no longer ships #stub).
+  def with_singleton_stub(object, method_name, implementation)
+    original = object.method(method_name)
+    object.define_singleton_method(method_name, &implementation)
+    yield
+  ensure
+    object.define_singleton_method(method_name, original)
   end
 end

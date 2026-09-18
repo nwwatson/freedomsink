@@ -14,7 +14,7 @@
   </div>
   <div class="flex flex-wrap gap-2">
     <%= link_to t('admin.post_dashboard.show.edit_post'), edit_admin_post_path(@post), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50" %>
-    <%= link_to t('admin.post_dashboard.show.view_live'), post_path(@post, slug: @post.slug), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50", target: "_blank" %>
+    <%= link_to t('admin.post_dashboard.show.view_live'), post_path(slug: @post.slug), class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50", target: "_blank" %>
   </div>
 </div>
 
@@ -26,6 +26,10 @@
   <%= render "admin/shared/stat_card", label: t('admin.post_dashboard.show.loves'), value: @post.loves_count %>
 
   <%= render "admin/shared/stat_card", label: t('admin.post_dashboard.show.engagement_rate'), value: "#{@engagement_rate}%" %>
+
+  <% if @fediverse_likes_count.positive? || site_setting.activitypub_enabled? %>
+    <%= render "admin/shared/stat_card", label: t('admin.post_dashboard.show.fediverse_likes'), value: @fediverse_likes_count %>
+  <% end %>
 </div>
 
 <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">

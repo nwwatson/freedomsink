@@ -88,9 +88,11 @@ class Admin::SetupControllerTest < ActionDispatch::IntegrationTest
   def destroy_all_users
     Comment.delete_all
     Love.delete_all
+    ReadingListItem.delete_all
     Subscriber.update_all(source_post_id: nil)
     PostView.delete_all
     PostTag.delete_all
+    MailingListPost.delete_all
     Chat.delete_all
     PostVersion.delete_all
     Post.delete_all
@@ -100,6 +102,7 @@ class Admin::SetupControllerTest < ActionDispatch::IntegrationTest
     Passkey.delete_all
     NewsletterDelivery.delete_all
     Newsletter.delete_all
+    Export.delete_all
     User.delete_all
   end
 end

@@ -46,22 +46,30 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.1"
+# image_processing 2.x no longer depends on ruby-vips; Active Storage's :vips variant processor needs it
+gem "ruby-vips", "~> 2.0", require: false
 
 # Uncomment for S3-compatible storage (AWS S3, DigitalOcean Spaces, MinIO, Cloudflare R2)
 gem "aws-sdk-s3", require: false
 
 # Modern rich text editor built on Lexical [https://github.com/basecamp/lexxy]
-gem "lexxy", "~> 0.9.0.beta"
+gem "lexxy", "~> 0.9.32"
 
 # Unified LLM interface for Claude, Gemini, and more [https://github.com/crmne/ruby_llm]
 gem "ruby_llm"
 
 # Model Context Protocol server for Claude Desktop integration [https://github.com/modelcontextprotocol/ruby-sdk]
-gem "mcp", "~> 0.8"
+gem "mcp", "~> 1.5"
 
 # Rust-backed CommonMark/GFM markdown to HTML [https://github.com/gjtorikian/commonmarker]
 gem "commonmarker", "~> 2.3"
+
+# HTML to Markdown conversion for content export [https://github.com/xijo/reverse_markdown]
+gem "reverse_markdown", "~> 3.0"
+
+# Zip archives for Markdown content export [https://github.com/rubyzip/rubyzip]
+gem "rubyzip", "~> 3.0", require: "zip"
 
 # Plain-text diffs for post version history [https://github.com/samg/diffy]
 gem "diffy"

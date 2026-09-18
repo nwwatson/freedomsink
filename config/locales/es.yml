@@ -1,7 +1,10 @@
 es:
   errors:
     messages:
+      navigation_link: "debe ser una ruta que empiece con / (p. ej. /acerca), una URL http(s) o un enlace mailto:"
+      navigation_social_url: "debe ser una URL http(s) completa para los enlaces sociales"
       hex_color: "debe ser un color hexadecimal válido (p. ej. #1a1a2e)"
+      reading_list_full: "Tu lista de lectura está llena (hasta %{count} artículos)"
   date:
     formats:
       short: "%-d %b %Y"
@@ -54,7 +57,11 @@ es:
 
   layouts:
     application:
+      primary_navigation: "Principal"
+      footer_navigation: "Pie de página"
+      social_links: "Redes sociales"
       toggle_dark_mode: "Alternar modo oscuro"
+      reading_list: "Lista de lectura"
       copyright_html: "&copy; %{year} %{site_name}. Todos los derechos reservados."
     editor:
       keep_editing: "Seguir editando"
@@ -80,6 +87,7 @@ es:
       segments: "Segmentos"
       newsletters: "Boletines"
       newsletter_settings: "Configuración de boletín"
+      mailing_lists: "Listas de correo"
       growth: "Crecimiento"
       traffic: "Tráfico"
       memberships: "Membresías"
@@ -93,6 +101,9 @@ es:
       settings: "Configuración"
       passkeys: "Claves de acceso"
       api_tokens: "Tokens de API"
+      webhooks: "Webhooks"
+      exports: "Exportar"
+      navigation: "Navegación"
 
   posts:
     index:
@@ -103,6 +114,15 @@ es:
       get_notified: "Recibe notificaciones cuando se publiquen nuevas publicaciones."
     show:
       comments: "Comentarios"
+      share:
+        heading: "Comparte esta publicación"
+        twitter: "Compartir en X"
+        linkedin: "Compartir en LinkedIn"
+        facebook: "Compartir en Facebook"
+        email: "Compartir por correo electrónico"
+        copy_link: "Copiar enlace"
+        copied: "¡Copiado!"
+        native_share: "Compartir"
     post_navigation:
       previous_post: "Publicación anterior"
       next_post: "Siguiente publicación"
@@ -119,6 +139,18 @@ es:
       paid_description: "Conviértete en miembro de pago de %{site_name} para acceder a este y todo el contenido premium."
       upgrade_cta: "Ver opciones de membresía"
 
+  reading_list:
+    show:
+      title: "Lista de lectura"
+      description: "Artículos que guardaste para leer más tarde."
+      empty: "Todavía no has guardado nada. Usa el icono de marcador en cualquier artículo para guardarlo."
+      sync_heading: "Lleva tu lista de lectura a todas partes"
+      sync_description: "Tu lista solo se guarda en este dispositivo. Suscríbete a %{site_name} para sincronizarla en todos tus dispositivos."
+    bookmark:
+      save: "Guardar en la lista de lectura"
+      remove: "Quitar de la lista de lectura"
+    errors:
+      not_found: "Artículo no encontrado"
   memberships:
     index:
       title: "Membresía"
@@ -138,6 +170,7 @@ es:
   comments:
     deleted: "[eliminado]"
     edited: "editado"
+    via_fediverse: "desde el fediverso"
     delete_confirm: "¿Eliminar este comentario?"
     form:
       write: "Escribir"
@@ -172,11 +205,36 @@ es:
       about_description: "%{site_name} es una publicación cuidadosamente elaborada enfocada en ofrecer escritura e ideas de calidad."
     show: {}
 
+  email_preferences:
+    show:
+      title: "Preferencias de correo"
+      intro_html: "Elige con qué frecuencia <strong>%{email}</strong> recibe avisos de nuevas publicaciones."
+      legend: "Frecuencia de correo"
+      lists_legend: "Tus suscripciones"
+      unsubscribed_notice: "Esta dirección está dada de baja, así que no recibirá correos hasta que vuelva a suscribirse."
+      save: "Guardar preferencias"
+      return_to_site: "Volver al sitio"
+    frequencies:
+      immediate:
+        label: "Cada nueva publicación"
+        hint: "Un correo en cuanto se publica cada entrada."
+      weekly:
+        label: "Resumen semanal"
+        hint: "Un correo cada lunes con las publicaciones de la semana."
+      monthly:
+        label: "Resumen mensual"
+        hint: "Un correo el día 1 de cada mes con las publicaciones del mes."
+      none:
+        label: "Sin correos de publicaciones"
+        hint: "Deja de recibir avisos de nuevas publicaciones. Seguirás recibiendo los boletines."
+  
   unsubscribes:
     show:
       title: "Cancelar suscripción"
       confirm_message_html: "¿Estás seguro de que quieres cancelar la suscripción de <strong>%{email}</strong> a nuestro boletín?"
       yes_unsubscribe: "Sí, cancelar mi suscripción"
+      fewer_emails: "¿Recibes demasiados correos?"
+      change_frequency: "Cambia a un resumen semanal o mensual."
     create:
       title: "Te has dado de baja"
       removed_html: "<strong>%{email}</strong> ha sido eliminado de nuestra lista de correo."
@@ -259,6 +317,9 @@ es:
         visibility_members_only: "Solo miembros"
         visibility_paid_only: "Solo miembros de pago"
         visibility_help: "Controla quién puede leer esta publicación."
+        mailing_lists: "Enviar por correo a"
+        mailing_lists_help: "Los suscriptores de las listas marcadas reciben un correo cuando esta publicación se publica por primera vez. Desmarca todas las listas para no enviarlo."
+        mailing_lists_sent: "Se envió el correo a los suscriptores el %{date}."
         generate_with_ai: "Generar con IA"
         meta_description: "Meta descripción"
         meta_description_placeholder: "Breve descripción para motores de búsqueda (máx. 160 caracteres)"
@@ -315,10 +376,48 @@ es:
         handle: "Nombre de usuario"
         status: "Estado"
         subscribed: "Suscrito"
+        email_frequency: "Frecuencia de correo"
+        mailing_lists: "Listas de correo"
+        no_mailing_lists: "No está en ninguna lista de correo"
         labels: "Etiquetas"
         add_label: "Agregar etiqueta"
         grant_membership: "Otorgar membresía de cortesía"
         grant_membership_button: "Otorgar"
+    mailing_lists:
+      index:
+        title: "Listas de correo"
+        new_list: "Nueva lista"
+        intro: "Los suscriptores eligen qué listas reciben en su página de preferencias de correo. Las nuevas publicaciones se envían a las listas marcadas en el editor, y las campañas pueden dirigirse a una sola lista."
+        name: "Nombre"
+        frequency: "Frecuencia"
+        status: "Estado"
+        subscribers: "Suscriptores"
+        subscriber_count:
+          one: "%{count} suscriptor"
+          other: "%{count} suscriptores"
+        no_lists: "No hay listas de correo"
+        get_started: "Crea una lista para que los suscriptores elijan qué reciben."
+      badges:
+        active: "Activa"
+        inactive: "Inactiva"
+        default: "Predeterminada"
+      form:
+        name: "Nombre"
+        name_placeholder: "p. ej. Resumen semanal"
+        description: "Descripción"
+        description_hint: "Se muestra a los suscriptores en su página de preferencias de correo."
+        frequency: "Frecuencia"
+        frequency_placeholder: "p. ej. Semanal"
+        active: "Activa"
+        active_hint: "Las listas inactivas se ocultan a los suscriptores y no reciben correos de publicaciones."
+        subscribe_by_default: "Suscribir a los nuevos suscriptores por defecto"
+        subscribe_by_default_hint: "Los nuevos suscriptores se unen automáticamente a esta lista, y las nuevas publicaciones se envían a ella salvo que se desmarque en el editor."
+        save: "Guardar lista"
+      new:
+        title: "Nueva lista de correo"
+      edit:
+        title: "Editar lista de correo"
+        delete_confirm: "¿Eliminar esta lista? Sus suscriptores conservan sus otras listas, y las campañas dirigidas a ella se enviarán a todos los suscriptores."
     subscriber_labels:
       index:
         title: "Etiquetas de suscriptores"
@@ -372,6 +471,7 @@ es:
         reject: "Rechazar"
         delete_confirm: "¿Eliminar este comentario?"
         no_comments: "Aún no hay comentarios."
+        fediverse: "Fediverso"
     payment_settings:
       edit:
         title: "Configuración de pagos"
@@ -476,6 +576,106 @@ es:
         revoke: "Revocar"
         revoke_confirm: "¿Revocar este token? Las aplicaciones que lo usen perderán acceso."
         no_tokens: "Aún no hay tokens de API. Crea uno para conectar Claude Desktop u otros clientes MCP."
+    webhooks:
+      index:
+        title: "Webhooks"
+        new_webhook: "Nuevo webhook"
+        url: "URL"
+        events: "Eventos"
+        last_triggered: "Última activación"
+        last_response: "Última respuesta"
+        status: "Estado"
+        disabled: "Deshabilitado"
+        deliveries: "Entregas"
+        no_webhooks: "Aún no hay webhooks. Agrega uno para notificar eventos del sitio a servicios de terceros."
+      new:
+        title: "Nuevo webhook"
+      edit:
+        title: "Editar webhook"
+        secret_shown: "Tu secreto de firma del webhook (cópialo ahora — no se mostrará de nuevo):"
+        copy: "Copiar"
+        send_test: "Enviar evento de prueba"
+        regenerate_secret: "Regenerar secreto"
+        regenerate_confirm: "¿Regenerar el secreto de firma? Las entregas firmadas con el secreto anterior fallarán la verificación."
+        view_deliveries: "Ver entregas"
+      form:
+        events: "Eventos"
+        active: "Activo"
+        active_help: "Se deshabilita automáticamente tras %{count} fallos de entrega consecutivos."
+    webhook_deliveries:
+      index:
+        title: "Entregas de webhooks"
+        back_to_webhooks: "Volver a webhooks"
+        event: "Evento"
+        response: "Respuesta"
+        attempted_at: "Intentado"
+        status: "Estado"
+        success: "Éxito"
+        failed: "Fallido"
+        no_response: "Sin respuesta"
+        no_deliveries: "Aún no hay entregas."
+    navigation_items:
+      index:
+        title: "Navegación"
+        subtitle: "Elige los enlaces que aparecen en el encabezado y el pie de página. Arrastra los elementos (o usa las flechas) para reordenarlos."
+        empty: "Aún no hay enlaces."
+        add_item: "Añadir un enlace"
+      edit:
+        title: "Editar enlace"
+      item:
+        drag: "Arrastra para reordenar"
+        new_tab: "se abre en una pestaña nueva"
+        move_up: "Subir"
+        move_down: "Bajar"
+        confirm_delete: "¿Quitar «%{label}» de la navegación?"
+      form:
+        label: "Etiqueta"
+        url: "URL"
+        url_help: "Una ruta de este sitio (/acerca), una URL completa (https://…) o un enlace mailto:. Los enlaces sociales deben ser URL completas."
+        location: "Ubicación"
+        open_in_new_tab: "Abrir en una pestaña nueva"
+        add: "Añadir"
+        save: "Guardar"
+        label_placeholder:
+          header: "Acerca de"
+          footer: "Privacidad"
+          social: "GitHub"
+        url_placeholder:
+          header: "/acerca"
+          footer: "/privacidad"
+          social: "https://github.com/tu-usuario"
+      locations:
+        header:
+          title: "Encabezado"
+          description: "Enlaces en el encabezado del sitio, debajo del nombre."
+        footer:
+          title: "Pie de página"
+          description: "Enlaces de texto en el pie de página del sitio."
+        social:
+          title: "Redes sociales"
+          description: "Enlaces con icono en el pie de página. El icono se elige según la URL (X, GitHub, LinkedIn, Bluesky, Mastodon, YouTube, Instagram y más)."
+    exports:
+      index:
+        title: "Exportar contenido"
+        subtitle: "Descarga una copia de tu sitio como respaldo o para migrarlo. Las exportaciones se generan en segundo plano y se conservan las 10 más recientes."
+        markdown_title: "Archivo Markdown"
+        markdown_description: "Un archivo zip con cada publicación y página en Markdown con front matter, más las imágenes destacadas e insertadas."
+        export_markdown: "Exportar Markdown"
+        json_title: "JSON completo del sitio"
+        json_description: "Un respaldo JSON completo de ajustes, autores, categorías, etiquetas, publicaciones, páginas y suscriptores. Nunca incluye claves de API."
+        export_json: "Exportar JSON"
+        recent_exports: "Exportaciones recientes"
+        no_exports: "Aún no hay exportaciones."
+        download: "Descargar"
+        delete_confirm: "¿Eliminar esta exportación?"
+      formats:
+        markdown: "Archivo Markdown"
+        json: "JSON completo del sitio"
+      statuses:
+        pending: "En cola"
+        processing: "Procesando"
+        completed: "Lista"
+        failed: "Fallida"
     newsletters:
       index:
         title: "Boletines"
@@ -501,6 +701,8 @@ es:
         preheader_help: "Texto corto que se muestra en los clientes de correo antes de abrir. Máx. 150 caracteres."
         audience: "Audiencia"
         all_subscribers: "Todos los suscriptores confirmados"
+        mailing_list: "Lista de correo"
+        all_lists: "Todos los suscriptores (cualquier lista)"
         target_audience: "Audiencia objetivo"
         confirmed_subscribers: "suscriptores confirmados"
         sent: "Enviado"
@@ -521,6 +723,8 @@ es:
     settings:
       edit:
         title: "Configuración del sitio"
+        export_content: "Exportar tu contenido (Markdown o JSON) →"
+        manage_navigation: "Gestionar enlaces del encabezado, pie de página y redes sociales →"
         subtitle: "Configura el nombre, descripción e imagen de compartir social predeterminada de tu sitio."
         errors_prevented_html: "%{count} impidieron que la configuración se guardara:"
         description_placeholder: "Una breve descripción de tu sitio"
@@ -582,6 +786,16 @@ es:
         search_engines_description: "Controla cómo los rastreadores de motores de búsqueda interactúan con tu sitio."
         block_crawlers: "Bloquear todos los rastreadores"
         block_crawlers_description: "Cuando está habilitado, robots.txt le dirá a todos los motores de búsqueda que no indexen tu sitio. Útil durante el desarrollo o para sitios privados."
+        fediverse: "Fediverso (ActivityPub)"
+        fediverse_description: "Permite que personas en Mastodon y otros servidores del fediverso sigan este sitio. Las publicaciones se entregan a los seguidores y sus respuestas llegan como comentarios pendientes de moderación. Requiere que APP_HOST sea el dominio permanente de tu sitio."
+        activitypub_enabled: "Activar federación"
+        activitypub_enabled_description: "Expone los endpoints de WebFinger y ActivityPub. Las publicaciones solo para miembros o de pago se comparten como un adelanto con un enlace, nunca completas."
+        activitypub_username: "Nombre de usuario en el fediverso"
+        activitypub_username_hint: "Letras minúsculas, números y guiones bajos. Los seguidores encuentran el sitio buscando este identificador."
+        activitypub_handle: "Tu identificador en el fediverso:"
+        activitypub_followers:
+          one: "1 seguidor"
+          other: "%{count} seguidores"
         save_settings: "Guardar configuración"
         language: "Idioma"
         locale: "Idioma"
@@ -670,6 +884,7 @@ es:
         unique_viewers: "Visitantes únicos"
         loves: "Me gusta"
         engagement_rate: "Tasa de interacción"
+        fediverse_likes: "Me gusta del fediverso"
         views_last_30_days: "Vistas (últimos 30 días)"
         no_view_data: "Aún no hay datos de vistas."
         traffic_sources: "Fuentes de tráfico"
@@ -683,9 +898,7 @@ es:
         new_page: "Nueva página"
         title_header: "Título"
         status: "Estado"
-        nav: "Nav"
         slug: "Slug"
-        in_nav: "En Nav"
         no_pages: "Aún no hay páginas"
         get_started: "Crea tu primera página para comenzar."
       form:
@@ -696,9 +909,8 @@ es:
       settings_fields:
         slug_placeholder: "generado-automaticamente"
         slug_help: "Identificador amigable para URL. Las páginas se sirven en /{slug}."
-        show_in_navigation: "Mostrar en la navegación"
-        show_in_navigation_help: "Mostrar esta página en el encabezado del sitio."
-        position_help: "Los números más bajos aparecen primero en la navegación."
+        navigation_help: "Las páginas no se añaden al menú del sitio automáticamente."
+        manage_navigation: "Gestionar navegación →"
         meta_description: "Meta descripción"
         meta_description_placeholder: "Breve descripción para motores de búsqueda..."
         meta_description_help: "Hasta 160 caracteres. Usado por motores de búsqueda."
@@ -738,9 +950,12 @@ es:
         title_change: "Título cambiado"
         content_diff: "Cambios en el contenido"
 
+  activity_pub:
+    read_more: "Lee la publicación completa en %{site}"
   mailer:
     footer:
       unsubscribe: "Cancelar suscripción"
+      email_preferences: "Preferencias de correo"
 
   comment_mailer:
     reply_notification:
@@ -763,6 +978,19 @@ es:
       click_to_sign_in: "Haz clic en el enlace de abajo para iniciar sesión:"
       sign_in: "Iniciar sesión"
       link_expiry: "Este enlace expirará en 15 minutos."
+  digest_mailer:
+    digest:
+      subject:
+        one: "1 nueva publicación en %{site_name}"
+        other: "%{count} nuevas publicaciones en %{site_name}"
+      heading: "Novedades en %{site_name}"
+      intro:
+        one: "Esta es la publicación de desde tu último resumen."
+        other: "Estas son las %{count} publicaciones de desde tu último resumen."
+      read_more: "Leer más"
+      view_all:
+        one: "Ver 1 publicación más"
+        other: "Ver %{count} publicaciones más"
   post_notification_mailer:
     new_post:
       read_full_post: "Leer la publicación completa"
@@ -798,6 +1026,9 @@ es:
       not_authorized: "No estás autorizado para realizar esta acción."
     unsubscribes:
       invalid_link: "Enlace de cancelación de suscripción inválido o expirado."
+    email_preferences:
+      updated: "Tus preferencias de correo se han guardado."
+      invalid_link: "Enlace de preferencias de correo no válido o caducado."
     comments:
       could_not_save: "No se pudo guardar el comentario."
       approved: "Comentario aprobado."
@@ -832,6 +1063,10 @@ es:
         created: "Página creada."
         updated: "Página actualizada."
         deleted: "Página eliminada."
+      mailing_lists:
+        created: "Lista de correo creada."
+        updated: "Lista de correo actualizada."
+        deleted: "Lista de correo eliminada."
       subscriber_labels:
         created: "Etiqueta creada."
         updated: "Etiqueta actualizada."
@@ -865,6 +1100,21 @@ es:
       api_tokens:
         created: "Token de API creado."
         revoked: "Token de API revocado."
+      webhooks:
+        created: "Webhook creado."
+        updated: "Webhook actualizado."
+        deleted: "Webhook eliminado."
+        test_sent: "Evento de prueba enviado."
+        secret_regenerated: "Secreto de firma regenerado."
+      navigation_items:
+        created: "Enlace añadido."
+        updated: "Enlace actualizado."
+        deleted: "Enlace eliminado."
+      exports:
+        started: "Exportación iniciada. Estará lista para descargar en breve."
+        invalid_format: "Formato de exportación desconocido."
+        deleted: "Exportación eliminada."
+        file_missing: "Ese archivo de exportación ya no está disponible."
       setup:
         welcome: "¡Bienvenido a %{site_name}! Tu cuenta de administrador ha sido creada."
       ai:
