@@ -383,10 +383,9 @@ GEM
     safety_net_attestation (0.5.0)
       jwt (>= 2.0, < 4.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.49.0)
+    selenium-webdriver (4.50.0)
       base64 (~> 0.2)
       logger (~> 1.4)
-      rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     sendgrid-ruby (6.7.0)
@@ -675,7 +674,7 @@ CHECKSUMS
   rubyzip (3.6.0) sha256=268994d44d62282d1cfd99bf10eae48d7267199158ad7ea3e1fee2da9458b695
   safety_net_attestation (0.5.0) sha256=c8cd01dd550dbe8553862918af6355a04672db11d218ec96104ce3955293f2aa
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  selenium-webdriver (4.49.0) sha256=b430f091a3cababb356b6f6132e0e4f385b017819355f563557e1537819edc89
+  selenium-webdriver (4.50.0) sha256=d12f94025bc33af44428ed6b8def4896a7bb9c4521212579241650d6cb060fcb
   sendgrid-ruby (6.7.0) sha256=c9ff96bd37c9d6d3ce39c3c1017ee3cd9d09c155ec6af1b5078d05b5d832d111
   simpleidn (0.3.0) sha256=12ca730bed2f3db04d11e9bfd1bca3e11fb37f55b21eb2e9793fb5814bf54d03
   solid_cable (4.0.2) sha256=084636a67679ad00d23088b33c84047e614bcf41ee559db24b414d83cdc42d03
